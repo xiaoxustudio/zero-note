@@ -1,0 +1,25 @@
+.Head {
+  width: 100%;
+  display: flex;
+  padding: 0.4em 0.3em;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.Left {
+  flex: 1;
+}
+.Midden {
+  flex: 1;
+  -webkit-app-region: drag;
+  display: flex;
+  justify-content: center;
+}
+.Right {
+  flex: 1;
+  display: flex;
+  justify-content: right;
+  svg {
+    color: #ccc;
+  }
+}
