@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
-import path from 'path'
+import path, { normalize } from 'path'
 import fs from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -80,8 +80,8 @@ app.whenReady().then(() => {
   })
 
   // 获取用户文档路径
-  ipcMain.handle('getDocPath', () => {
-    return app.getPath('documents')
+  ipcMain.addListener('getDocPath', (e) => {
+    e.returnValue = app.getPath('documents')
   })
 
   ipcMain.on('getTitle', (event) => {
@@ -102,17 +102,17 @@ app.whenReady().then(() => {
   })
 
   // 检查文件/文件夹是否存在
-  ipcMain.handle('file-exists', async (_, filePath) => {
+  ipcMain.on('fileExists', async (event, filePath) => {
     try {
       fs.accessSync(filePath)
-      return true
+      event.returnValue = true
     } catch {
-      return false
+      event.returnValue = false
     }
   })
 
   // 创建文件
-  ipcMain.handle('create-file', async (_, filePath, content = '') => {
+  ipcMain.handle('createFile', async (_, filePath, content = '') => {
     try {
       const dir = path.dirname(filePath)
       fs.mkdirSync(dir, { recursive: true }) // 自动创建父目录
@@ -125,7 +125,7 @@ app.whenReady().then(() => {
   })
 
   // 创建文件夹
-  ipcMain.handle('create-dir', async (_, dirPath) => {
+  ipcMain.handle('createDir', async (_, dirPath) => {
     try {
       fs.mkdirSync(dirPath, { recursive: true })
       return { success: true }
@@ -135,7 +135,7 @@ app.whenReady().then(() => {
   })
 
   // 读取文件
-  ipcMain.handle('read-file', async (_, filePath) => {
+  ipcMain.handle('readFile', async (_, filePath) => {
     try {
       const content = fs.readFileSync(filePath, 'utf-8')
       return { success: true, content }
@@ -145,7 +145,7 @@ app.whenReady().then(() => {
   })
 
   // 读取目录
-  ipcMain.handle('read-dir', async (_, dirPath) => {
+  ipcMain.handle('readDir', async (_, dirPath) => {
     try {
       const items = fs.readdirSync(dirPath, { withFileTypes: true })
       return {
@@ -171,7 +171,7 @@ app.whenReady().then(() => {
   })
 
   // 删除文件/文件夹
-  ipcMain.handle('delete-path', async (_, targetPath) => {
+  ipcMain.handle('deletePath', async (_, targetPath) => {
     try {
       const stats = fs.lstatSync(targetPath)
 
@@ -185,6 +185,15 @@ app.whenReady().then(() => {
     } catch (error: any) {
       return { success: false, error: error.message }
     }
+  })
+  // 路径拼接
+  ipcMain.addListener('pathPush', async (event, targetPath, distPath) => {
+    event.returnValue = path.join(targetPath, distPath)
+  })
+
+  // 打开资源管理器路径
+  ipcMain.on('openPath', (_, path) => {
+    shell.openPath(normalize(path))
   })
 
   createWindow()

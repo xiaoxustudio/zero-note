@@ -1,0 +1,14 @@
+.is-selected {
+  background-color: rgba(220, 220, 220, 0.5);
+  position: relative;
+  &::after {
+    content: '';
+    width: 2px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(220, 220, 220, 0.75);
+    border-radius: 4px;
+  }
+}

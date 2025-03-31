@@ -1,21 +1,10 @@
 .container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: row;
-  .leftLayout {
-    width: 4em;
-    height: 100%;
-    padding: 0.45em;
-    box-sizing: border-box;
-  }
-  .rightLayout {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    border: solid 2px #ebebef;
-    border-radius: 4px;
-  }
+}
+
+.Editor {
+  padding: 0.35em 1.3em;
 }
 
 .BubbleMenu {
@@ -25,7 +14,12 @@
   background-color: white;
 }
 
-.FloatingMenu {
-  margin-left: -50px;
+/* 标题输入框 */
+.TitleInput {
+  width: calc(100% - 1.3em * 2);
+  margin: 0.35em 1.3em 0 0.55em;
   box-sizing: border-box;
+  outline: none;
+  border: none;
+  font-size: 2em;
 }

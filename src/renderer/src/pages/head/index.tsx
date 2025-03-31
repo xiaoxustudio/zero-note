@@ -1,6 +1,8 @@
-import { Copy, Minus, Square, X } from 'lucide-react'
-import styles from './index.module.less'
+import { Copy, Minus, Square, X, File } from 'lucide-react'
 import { useRef, useState } from 'react'
+import { createDocFile } from '@renderer/utils'
+import styles from './index.module.less'
+import EventBus from '@renderer/bus'
 
 function Head() {
   const [isMaximized, setMaximized] = useState(window.api.isMaximized())
@@ -28,9 +30,17 @@ function Head() {
     canMoving.current = false
     window.removeEventListener('mousemove', handleMoveWindow)
   }
+
   return (
     <div className={styles.Head}>
-      <div className={styles.Left}></div>
+      <div className={styles.Left}>
+        <File
+          onClick={() => {
+            createDocFile('无标题', '')
+            EventBus.emit('updateSider')
+          }}
+        />
+      </div>
       <div
         className={styles.Midden}
         onMouseDown={(e) => {
