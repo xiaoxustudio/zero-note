@@ -7,7 +7,7 @@ import styles from './index.module.less'
 import BubbleMenuContent from './bubble-menu'
 import './index.less'
 import { FileConfig } from '@renderer/types'
-import { useEffect, useState } from 'react'
+import { CSSProperties, useEffect, useState } from 'react'
 import { readFile, createFile } from '../../utils/index'
 
 const extensions = [
@@ -25,9 +25,10 @@ const extensions = [
 
 export interface EditorProps {
   select: FileConfig
+  style?: CSSProperties
 }
 
-function Editor({ select }: EditorProps) {
+function Editor({ select, style }: EditorProps) {
   const [content, setContent] = useState('')
   const [title, setTitle] = useState(select.title)
   const editor = useEditor(
@@ -55,7 +56,7 @@ function Editor({ select }: EditorProps) {
   }, [select])
   if (!editor || !select) return null
   return (
-    <>
+    <div className={styles.container} style={style}>
       <input
         className={styles.TitleInput}
         value={title}
@@ -69,7 +70,7 @@ function Editor({ select }: EditorProps) {
       <EditorContent className={styles.Editor} editor={editor}>
         <BubbleMenuContent className={styles.BubbleMenu} editor={editor} />
       </EditorContent>
-    </>
+    </div>
   )
 }
 

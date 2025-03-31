@@ -2,7 +2,7 @@ import Editor from './editor'
 import Head from './head'
 import { DocDir, globalDirConfig, readDocDir } from '@renderer/utils'
 import { FileConfig } from '@renderer/types'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import styles from './index.module.less'
 import './index.less'
 import classNames from 'classnames'
@@ -11,6 +11,8 @@ import { Popover } from 'antd'
 import RightContextMenu from './right-context-menu'
 
 function AppContent() {
+  const PageRef = useRef<HTMLDivElement>(null)
+  const bound = useRef<DOMRect>(new DOMRect())
   const [select, setSelect] = useState<string>()
   const [fileList, setFileList] = useState<FileConfig[]>([])
   const selectItem = useMemo(
@@ -26,6 +28,9 @@ function AppContent() {
   useEffect(() => {
     handleUpdateSider()
     EventBus.on('updateSider', handleUpdateSider)
+    if (PageRef.current) {
+      bound.current = PageRef.current.getBoundingClientRect()
+    }
   }, [])
   return (
     <div className={styles.container}>
@@ -51,9 +56,14 @@ function AppContent() {
         </div>
         <div className={styles.rightLayout}>
           {selectItem ? (
-            <Editor select={selectItem} />
+            <Editor
+              select={selectItem}
+              style={{ height: `${Math.ceil(bound.current.height)}px` }}
+            />
           ) : (
-            <div className={styles.noOpenDoc}>请先打开一个文档</div>
+            <div ref={PageRef} className={styles.noOpenDoc}>
+              请先打开一个文档
+            </div>
           )}
         </div>
       </div>
