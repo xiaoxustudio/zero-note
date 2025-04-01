@@ -1,27 +1,11 @@
 import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import TextStyle from '@tiptap/extension-text-style'
-import { Color } from '@tiptap/extension-color'
-import Highlight from '@tiptap/extension-highlight'
 import styles from './index.module.less'
 import BubbleMenuContent from './bubble-menu'
-import './index.less'
 import { FileConfig } from '@renderer/types'
 import { CSSProperties, useEffect, useState } from 'react'
-import { readFile, createFile } from '../../utils/index'
-
-const extensions = [
-  StarterKit.configure({
-    bold: {
-      HTMLAttributes: {
-        class: 'bold'
-      }
-    }
-  }),
-  Highlight.configure({ multicolor: true }),
-  TextStyle,
-  Color.configure({ types: ['textStyle'] })
-]
+import { readFile, createFile } from '@renderer/utils/index'
+import extensions from './extensions'
+import './index.less'
 
 export interface EditorProps {
   select: FileConfig

@@ -3,12 +3,11 @@ import Head from './head'
 import { DocDir, globalDirConfig, readDocDir } from '@renderer/utils'
 import { FileConfig } from '@renderer/types'
 import { useState, useEffect, useMemo, useRef } from 'react'
-import styles from './index.module.less'
-import './index.less'
 import classNames from 'classnames'
 import EventBus from '@renderer/bus'
-import { Popover } from 'antd'
 import RightContextMenu from './right-context-menu'
+import styles from './index.module.less'
+import './index.less'
 
 function AppContent() {
   const PageRef = useRef<HTMLDivElement>(null)
@@ -38,9 +37,10 @@ function AppContent() {
       <div className={styles.Layout}>
         <div className={styles.leftLayout}>
           {fileList.map((v) => (
-            <Popover
+            <RightContextMenu
               key={v.id}
-              content={<RightContextMenu className={styles.contextMenu} item={v} />}
+              className={styles.contextMenu}
+              item={v}
               trigger="contextMenu"
               arrow={false}
               placement="rightBottom"
@@ -51,7 +51,7 @@ function AppContent() {
               >
                 {v.title}
               </div>
-            </Popover>
+            </RightContextMenu>
           ))}
         </div>
         <div className={styles.rightLayout}>

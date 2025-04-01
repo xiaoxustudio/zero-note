@@ -1,4 +1,5 @@
-import { Editor, BubbleMenu, BubbleMenuProps } from '@tiptap/react'
+import { Editor, BubbleMenu, BubbleMenuProps, NodeRange } from '@tiptap/react'
+import classNames from 'classnames'
 import {
   Bold,
   Italic,
@@ -9,17 +10,57 @@ import {
   Heading5,
   Heading6,
   Baseline,
-  Palette
+  Palette,
+  Code,
+  ChevronDown
 } from 'lucide-react'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Button, Flex, Popover } from 'antd'
+import { all } from 'lowlight'
+import styles from './bubble-menu.module.less'
 
 interface BubbleMenuContentProps extends Partial<BubbleMenuProps> {
   editor: Editor
 }
 
+interface configSelect {
+  selectRanges: NodeRange[]
+  codeType: string
+}
+
 function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
   const ColorRef = useRef<HTMLInputElement>(null) // 文字颜色
   const BgColorRef = useRef<HTMLInputElement>(null) // 背景颜色
+  const configSelect = useRef<configSelect>({ selectRanges: [], codeType: '' })
+  const [codePopover, setCodePopover] = useState(false)
+  useEffect(() => {
+    const handleSelection = () => {
+      const { state } = editor
+      const { from, to } = state.selection
+      const nodeRanges: NodeRange[] = []
+      state.doc.nodesBetween(from, to, (node, pos) => {
+        if (node.isText) {
+          return
+        }
+
+        const relativeFrom = Math.max(from, pos)
+        const relativeTo = Math.min(to, pos + node.nodeSize)
+
+        nodeRanges.push({
+          node,
+          from: relativeFrom,
+          to: relativeTo
+        })
+      })
+      // 将当前选择的数据存储
+      configSelect.current.codeType = nodeRanges[0].node.attrs['language'] || ''
+      configSelect.current.selectRanges = nodeRanges
+    }
+    editor.on('selectionUpdate', handleSelection)
+    return () => {
+      editor.off('selectionUpdate', handleSelection)
+    }
+  }, [editor])
   return (
     <BubbleMenu {...props} editor={editor}>
       <Bold
@@ -91,6 +132,50 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
             editor.chain().focus().toggleHighlight({ color: e.target.value }).run()
           }}
         />
+      </span>
+      <span className={styles.CodeWrapper}>
+        <Code
+          className={classNames(editor.isActive('codeBlock') ? 'is-active' : '')}
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .toggleCodeBlock({ language: configSelect.current.codeType })
+              .run()
+          }
+        />
+        <Popover
+          open={codePopover}
+          onOpenChange={(n) => setCodePopover(n)}
+          zIndex={10000}
+          content={
+            <Flex
+              className={styles.PopoverWrapper}
+              vertical
+              justify="left"
+              align="start"
+              onWheel={(e) => e.stopPropagation()}
+            >
+              {Object.keys(all).map((v) => (
+                <Button
+                  key={v}
+                  type="text"
+                  onClick={() => {
+                    setCodePopover(false)
+                    configSelect.current.codeType = v
+                    editor.chain().focus().setCodeBlock({ language: v }).run()
+                  }}
+                >
+                  {v}
+                </Button>
+              ))}
+            </Flex>
+          }
+          trigger="click"
+          placement="right"
+        >
+          <ChevronDown className={styles.CodeChevronDown} />
+        </Popover>
       </span>
     </BubbleMenu>
   )
