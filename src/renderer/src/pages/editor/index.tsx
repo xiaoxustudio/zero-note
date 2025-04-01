@@ -1,12 +1,12 @@
 import { useEditor, EditorContent } from '@tiptap/react'
-import styles from './index.module.less'
-import BubbleMenuContent from './bubble-menu'
 import { FileConfig } from '@renderer/types'
 import { CSSProperties, useEffect, useState } from 'react'
 import { readFile, createFile, changeDocConfig } from '@renderer/utils/index'
-import extensions from './extensions'
-import './index.less'
 import EventBus from '@renderer/bus'
+import extensions from './extensions'
+import BubbleMenuContent from './bubble-menu'
+import styles from './index.module.less'
+import './index.less'
 
 export interface EditorProps {
   select: FileConfig
@@ -40,7 +40,10 @@ function Editor({ select, style }: EditorProps) {
   useEffect(() => {
     if (select)
       readFile(select.realFilePath).then((data) => {
-        if (data.success) setContent(data.content || '')
+        if (data.success) {
+          setContent(data.content || '')
+          setTitle(select.title || '')
+        }
       })
     console.log(select)
   }, [select])
