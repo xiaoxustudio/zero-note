@@ -3,9 +3,10 @@ import styles from './index.module.less'
 import BubbleMenuContent from './bubble-menu'
 import { FileConfig } from '@renderer/types'
 import { CSSProperties, useEffect, useState } from 'react'
-import { readFile, createFile } from '@renderer/utils/index'
+import { readFile, createFile, changeDocConfig } from '@renderer/utils/index'
 import extensions from './extensions'
 import './index.less'
+import EventBus from '@renderer/bus'
 
 export interface EditorProps {
   select: FileConfig
@@ -31,6 +32,11 @@ function Editor({ select, style }: EditorProps) {
     },
     [content]
   )
+  useEffect(() => {
+    changeDocConfig(select.id, { ...select, title })
+    EventBus.emit('updateSider')
+  }, [title]) //eslint-disable-line
+
   useEffect(() => {
     if (select)
       readFile(select.realFilePath).then((data) => {

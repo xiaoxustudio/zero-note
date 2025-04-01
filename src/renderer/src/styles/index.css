@@ -21,12 +21,12 @@ body {
   outline: none !important;
 }
 
-:where(.css-dev-only-do-not-override-1a3rktk).ant-popover .ant-popover-inner {
+.ant-popover .ant-popover-inner {
   border: solid 2px #ebebef;
   box-shadow: none !important;
-  padding: 0.65em .35em;
+  padding: 0.65em 0.35em;
 }
 
-:where(.css-dev-only-do-not-override-1a3rktk).ant-space-gap-row-small {
+.ant-space-gap-row-small {
   row-gap: 0 !important;
 }

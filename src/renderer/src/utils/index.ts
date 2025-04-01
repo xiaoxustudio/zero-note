@@ -68,6 +68,15 @@ export function deleteDocFile(id: string) {
   window.api.deletePath(pathPush(DocDir, `~${id}.znote.json`))
 }
 
+export async function readDocConfig(id: string) {
+  const path = pathPush(DocDir, `~${id}.znote.json`)
+  return JSON.parse((await readFile(path)).content || '')
+}
+
+export async function changeDocConfig(id: string, content: Record<string, unknown>) {
+  window.api.createFile(pathPush(DocDir, `~${id}.znote.json`), JSON.stringify(content))
+}
+
 export function readDocDir() {
   return window.api.readDir(DocDir).then(({ success, files }) => {
     if (success) {

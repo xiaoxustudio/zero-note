@@ -15,7 +15,7 @@ function createWindow() {
     titleBarStyle: 'hidden',
     frame: false,
     resizable: false,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon,
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false

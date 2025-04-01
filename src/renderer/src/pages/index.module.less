@@ -13,11 +13,15 @@
   display: flex;
   flex-direction: row;
 }
+
 /* 左侧列表 */
+
 .ListItem {
   padding: 0.34em 0.3em;
   border-radius: 4px;
   position: relative;
+  text-overflow: ellipsis;
+  overflow: hidden;
   &:hover {
     background-color: rgba(220, 220, 220, 0.3);
   }
