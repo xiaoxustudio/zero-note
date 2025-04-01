@@ -11,7 +11,6 @@ import './index.less'
 
 function AppContent() {
   const PageRef = useRef<HTMLDivElement>(null)
-  const bound = useRef<DOMRect>(new DOMRect())
   const [select, setSelect] = useState<string>()
   const [fileList, setFileList] = useState<FileConfig[]>([])
   const selectItem = useMemo(
@@ -24,12 +23,10 @@ function AppContent() {
     }
     window.api.createFile(globalDirConfig, '{}')
   }
+
   useEffect(() => {
     handleUpdateSider()
     EventBus.on('updateSider', handleUpdateSider)
-    if (PageRef.current) {
-      bound.current = PageRef.current.getBoundingClientRect()
-    }
   }, [])
   return (
     <div className={styles.container}>
@@ -55,16 +52,14 @@ function AppContent() {
           ))}
         </div>
         <div className={styles.rightLayout}>
-          {selectItem ? (
-            <Editor
-              select={selectItem}
-              style={{ height: `${Math.ceil(bound.current.height)}px` }}
-            />
-          ) : (
-            <div ref={PageRef} className={styles.noOpenDoc}>
-              请先打开一个文档
-            </div>
-          )}
+          {selectItem && <Editor select={selectItem} />}
+          <div
+            ref={PageRef}
+            className={styles.noOpenDoc}
+            style={{ opacity: !selectItem ? 1 : 0, visibility: selectItem && 'hidden' }}
+          >
+            请先打开一个文档
+          </div>
         </div>
       </div>
     </div>

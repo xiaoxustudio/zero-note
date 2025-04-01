@@ -14,9 +14,6 @@ importers:
       '@electron-toolkit/utils':
         specifier: ^4.0.0
         version: 4.0.0(electron@35.1.2)
-      '@tiptap/extension-code-block-lowlight':
-        specifier: ^2.11.7
-        version: 2.11.7(@tiptap/core@2.11.6(@tiptap/pm@2.11.6))(@tiptap/extension-code-block@2.11.6(@tiptap/core@2.11.6(@tiptap/pm@2.11.6))(@tiptap/pm@2.11.6))(@tiptap/pm@2.11.6)(highlight.js@11.11.1)(lowlight@3.3.0)
       '@tiptap/extension-color':
         specifier: ^2.11.6
         version: 2.11.6(@tiptap/core@2.11.6(@tiptap/pm@2.11.6))(@tiptap/extension-text-style@2.11.6(@tiptap/core@2.11.6(@tiptap/pm@2.11.6)))
@@ -960,15 +957,6 @@ packages:
     resolution: {integrity: sha512-vRUhnzJoL8yHL7taJJM6IDaR/neZsBQrGa0N9HaUhfyEIicpwNvW2Spo7YR2EGxVekd0GFoHy+MXpi80mN3cIg==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
-
-  '@tiptap/extension-code-block-lowlight@2.11.7':
-    resolution: {integrity: sha512-+eUMxvDgoYmAvkuJ2ljV2COyeH6HwH8LqCNWma+mFZCRDAoXNeqSHbBtI0Vzy4PqchfmxcmKERc99xEzoS9XUQ==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-      '@tiptap/extension-code-block': ^2.7.0
-      '@tiptap/pm': ^2.7.0
-      highlight.js: ^11
-      lowlight: ^2 || ^3
 
   '@tiptap/extension-code-block@2.11.6':
     resolution: {integrity: sha512-NcbzWS6zIfI96OaPmFeRdqL0cMWcHWrNbeYaPLx5JzHherxFRlW75Gh9bYVh5pLMNlZACvpc41NJdXTS0H2/2g==}
@@ -5201,14 +5189,6 @@ snapshots:
   '@tiptap/extension-bullet-list@2.11.6(@tiptap/core@2.11.6(@tiptap/pm@2.11.6))':
     dependencies:
       '@tiptap/core': 2.11.6(@tiptap/pm@2.11.6)
-
-  '@tiptap/extension-code-block-lowlight@2.11.7(@tiptap/core@2.11.6(@tiptap/pm@2.11.6))(@tiptap/extension-code-block@2.11.6(@tiptap/core@2.11.6(@tiptap/pm@2.11.6))(@tiptap/pm@2.11.6))(@tiptap/pm@2.11.6)(highlight.js@11.11.1)(lowlight@3.3.0)':
-    dependencies:
-      '@tiptap/core': 2.11.6(@tiptap/pm@2.11.6)
-      '@tiptap/extension-code-block': 2.11.6(@tiptap/core@2.11.6(@tiptap/pm@2.11.6))(@tiptap/pm@2.11.6)
-      '@tiptap/pm': 2.11.6
-      highlight.js: 11.11.1
-      lowlight: 3.3.0
 
   '@tiptap/extension-code-block@2.11.6(@tiptap/core@2.11.6(@tiptap/pm@2.11.6))(@tiptap/pm@2.11.6)':
     dependencies:

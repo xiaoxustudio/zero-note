@@ -23,7 +23,6 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
-    "@tiptap/extension-code-block-lowlight": "^2.11.7",
     "@tiptap/extension-color": "^2.11.6",
     "@tiptap/extension-highlight": "^2.11.6",
     "@tiptap/extension-text-style": "^2.11.6",
