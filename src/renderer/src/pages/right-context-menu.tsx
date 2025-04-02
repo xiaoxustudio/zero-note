@@ -1,6 +1,6 @@
 import EventBus from '@renderer/bus'
 import { FileConfig } from '@renderer/types'
-import { deleteDocFile } from '@renderer/utils'
+import { CopyDocFile, deleteDocFile } from '@renderer/utils'
 import { Button, Flex, FlexProps, Popover, PopoverProps } from 'antd'
 import { useState } from 'react'
 
@@ -14,7 +14,9 @@ function RightContextMenu({ item, className, children, ...props }: RightContextM
     {
       name: '复制',
       click() {
-        //
+        CopyDocFile(item.id, { title: item.title + '- 副本' }).then(() => {
+          EventBus.emit('updateSider')
+        })
       }
     },
     {

@@ -1,3 +1,5 @@
+import { FileConfig } from '@renderer/types'
+
 export const userDir = './zereNote/'
 export const userDocDir = './doc/'
 export const globalDir = window.api.pathPush(window.api.getDocPath(), userDir)
@@ -68,13 +70,40 @@ export function deleteDocFile(id: string) {
   window.api.deletePath(pathPush(DocDir, `~${id}.znote.json`))
 }
 
-export async function readDocConfig(id: string) {
+export async function CopyDocFile(id: string, config?: Partial<FileConfig & { content: string }>) {
+  const content = (await readFile(pathPush(DocDir, `${id}.znote`))).content
+  const ofileConfig = await readDocConfig(id)
+  const newId = ID() // 新ID
+  const newfile = pathPush(DocDir, `${newId}.znote`)
+  const newfileConfigPath = pathPush(DocDir, `~${newId}.znote.json`)
+  const newconfig = {
+    ...ofileConfig,
+    ...config
+  }
+  window.api.createFile(newfile, content || '')
+  window.api.createFile(
+    newfileConfigPath,
+    JSON.stringify({
+      ...newconfig,
+      id: newId,
+      createdTime: Date.now(),
+      lastUpdatedTime: Date.now(),
+      realFilePath: newfile
+    })
+  )
+}
+
+export async function readDocConfig(id: string): Promise<FileConfig> {
   const path = pathPush(DocDir, `~${id}.znote.json`)
   return JSON.parse((await readFile(path)).content || '')
 }
 
 export async function changeDocConfig(id: string, content: Record<string, unknown>) {
   window.api.createFile(pathPush(DocDir, `~${id}.znote.json`), JSON.stringify(content))
+}
+
+export async function changeDocContent(id: string, content: string) {
+  window.api.createFile(pathPush(DocDir, `${id}.znote`), content || '')
 }
 
 export function readDocDir() {

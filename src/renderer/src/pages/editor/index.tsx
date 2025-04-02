@@ -1,7 +1,7 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import { FileConfig } from '@renderer/types'
 import { CSSProperties, useEffect, useState } from 'react'
-import { readFile, createFile, changeDocConfig } from '@renderer/utils/index'
+import { readFile, changeDocConfig, changeDocContent } from '@renderer/utils/index'
 import EventBus from '@renderer/bus'
 import extensions from './extensions'
 import BubbleMenuContent from './bubble-menu'
@@ -27,7 +27,7 @@ function Editor({ select, style }: EditorProps) {
       },
       onUpdate({ editor }) {
         const _c = editor.getHTML()
-        if (select) createFile(select.realFilePath, _c)
+        if (select) changeDocContent(select.id, _c)
       }
     },
     [content]
