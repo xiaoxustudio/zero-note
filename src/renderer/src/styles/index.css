@@ -30,3 +30,8 @@ body {
 .ant-space-gap-row-small {
   row-gap: 0 !important;
 }
+
+::selection {
+  color: #fff;
+  background: #088;
+}

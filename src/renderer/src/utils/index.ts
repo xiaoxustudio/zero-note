@@ -28,6 +28,10 @@ export function ID(
 
 /* IO 相关 */
 
+export function showSaveDialog(option: Electron.SaveDialogOptions) {
+  return window.api.showSaveDialog(option)
+}
+
 export function fileExists(path: string) {
   return window.api.fileExists(path)
 }
@@ -96,6 +100,11 @@ export async function CopyDocFile(id: string, config?: Partial<FileConfig & { co
 export async function readDocConfig(id: string): Promise<FileConfig> {
   const path = pathPush(DocDir, `~${id}.znote.json`)
   return JSON.parse((await readFile(path)).content || '')
+}
+
+export async function readDocContent(id: string) {
+  const path = pathPush(DocDir, `${id}.znote`)
+  return (await readFile(path)).content
 }
 
 export async function changeDocConfig(id: string, content: Record<string, unknown>) {

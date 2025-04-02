@@ -26,7 +26,6 @@ export const CodeBlockLowlight = CodeBlock.extend<CodeBlockLowlightOptions>({
       HTMLAttributes: {}
     }
   },
-
   addProseMirrorPlugins() {
     return [
       ...(this.parent?.() || []),

@@ -101,9 +101,10 @@ app.whenReady().then(() => {
   })
 
   // 显示保存对话框
-  ipcMain.handle('show-save-dialog', (event, options) => {
+  ipcMain.handle('showSaveDialog', (event, options) => {
     const win = getWindowFromEvent(event)
-    return win && dialog.showSaveDialog(win, options)
+    if (!win) return
+    return dialog.showSaveDialog(win, options)
   })
 
   // 检查文件/文件夹是否存在

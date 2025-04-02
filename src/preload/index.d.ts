@@ -30,6 +30,9 @@ declare global {
       getDocPath: () => string
       pathPush: (path: string, path1: string) => string
       openPath: (path: string) => void
+      showSaveDialog: (
+        options: Electron.SaveDialogOptions
+      ) => Promise<Electron.SaveDialogReturnValue>
     }
   }
 }

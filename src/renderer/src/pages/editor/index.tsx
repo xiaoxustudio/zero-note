@@ -45,9 +45,11 @@ function Editor({ select, style }: EditorProps) {
           setTitle(select.title || '')
         }
       })
-    console.log(select)
+    // console.log(select)
   }, [select])
+
   if (!editor || !select) return null
+
   return (
     <div className={styles.container} style={style}>
       <input

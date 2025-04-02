@@ -98,7 +98,6 @@ export const CodeBlock = Node.create<CodeBlockOptions>({
             .filter((className) => className.startsWith(languageClassPrefix))
             .map((className) => className.replace(languageClassPrefix, ''))
           const language = languages[0]
-
           if (!language) {
             return null
           }
