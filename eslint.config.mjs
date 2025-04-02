@@ -3,7 +3,6 @@ import eslintConfigPrettier from '@electron-toolkit/eslint-config-prettier'
 import eslintPluginReact from 'eslint-plugin-react'
 import eslintPluginReactHooks from 'eslint-plugin-react-hooks'
 import eslintPluginReactRefresh from 'eslint-plugin-react-refresh'
-import eslintPluginImport from 'eslint-plugin-import'
 
 export default tseslint.config(
   { ignores: ['**/node_modules', '**/dist', '**/out'] },
@@ -14,31 +13,18 @@ export default tseslint.config(
     settings: {
       react: {
         version: 'detect'
-      },
-      'import/resolver': {
-        node: {
-          extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
-        }
       }
     }
   },
   {
-    extends: [
-      'airbnb',
-      'eslint:recommended',
-      'plugin:import/recommended',
-      'plugin:prettier/recommended'
-    ],
     files: ['**/*.{ts,tsx}'],
     plugins: {
       'react-hooks': eslintPluginReactHooks,
-      'react-refresh': eslintPluginReactRefresh,
-      'eslint-plugin-import': eslintPluginImport
+      'react-refresh': eslintPluginReactRefresh
     },
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginReactRefresh.configs.vite.rules,
-      'prettier/prettier': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off'
     }
   },
