@@ -1,6 +1,6 @@
 {
   "name": "note",
-  "version": "1.0.0",
+  "version": "1.0.0-beta",
   "description": "一款开源免费的笔记软件",
   "main": "./out/main/index.js",
   "author": "xuran",
