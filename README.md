@@ -1,34 +1,24 @@
-# note
+<p align="center">
+  <img alt="logo" src="./resources/icon.png" width="120" style="margin-bottom: 10px;">
+</p>
+<h3 align="center">零记</h3>
 
-An Electron application with React and TypeScript
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge&color=#4fc08d" />
+</p>
 
-## Recommended IDE Setup
+---
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+一款开源的轻量级笔记软件
 
-## Project Setup
+# 关于
 
-### Install
+作者：[徐然](https://github.com/xiaoxustudio)
 
-```bash
-$ pnpm install
-```
+联系方式：[xugame@qq.com](emailto://xugame@qq.com)
 
-### Development
+欢迎提出您宝贵的 **issue**，我们将会处理。
 
-```bash
-$ pnpm dev
-```
+# LICENSE
 
-### Build
-
-```bash
-# For windows
-$ pnpm build:win
-
-# For macOS
-$ pnpm build:mac
-
-# For Linux
-$ pnpm build:linux
-```
+[MIT](./LICENSE)
