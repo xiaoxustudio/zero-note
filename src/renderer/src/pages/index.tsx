@@ -11,6 +11,7 @@ import './index.less'
 
 function AppContent() {
   const PageRef = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(0)
   const [select, setSelect] = useState<string>()
   const [fileList, setFileList] = useState<FileConfig[]>([])
   const selectItem = useMemo(
@@ -24,9 +25,23 @@ function AppContent() {
     window.api.createFile(globalDirConfig, '{}')
   }
 
+  const handleResize = () => {
+    setHeight(0) // 重置高度
+    setTimeout(() => {
+      if (!PageRef.current) return
+      const { height } = PageRef.current.getBoundingClientRect()
+      setHeight(height)
+    }, 0)
+  }
+
   useEffect(() => {
     handleUpdateSider()
     EventBus.on('updateSider', handleUpdateSider)
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
   return (
     <div className={styles.container}>
@@ -52,7 +67,7 @@ function AppContent() {
           ))}
         </div>
         <div className={styles.rightLayout}>
-          {selectItem && <Editor select={selectItem} />}
+          {selectItem && <Editor select={selectItem} style={{ height: `${height}px` }} />}
           <div
             ref={PageRef}
             className={styles.noOpenDoc}

@@ -31,6 +31,11 @@ function createWindow() {
     return { action: 'deny' }
   })
 
+  mainWindow.on('resize', () => {
+    const { width, height } = mainWindow.getBounds()
+    ipcMain.emit('windowResize', width, height)
+  })
+
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
