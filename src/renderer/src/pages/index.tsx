@@ -1,16 +1,28 @@
 import Editor from './editor'
 import Head from './head'
-import { DocDir, globalDirConfig, readDocDir } from '@renderer/utils'
-import { FileConfig } from '@renderer/types'
+import {
+  DocDir,
+  EditorCodeBlockConfigToString,
+  globalDirConfig,
+  readDocDir,
+  readSoftWareConfig,
+  setGlobalHeight,
+  writeSoftWareConfig
+} from '@renderer/utils'
+import { FileConfig, SettingMenu } from '@renderer/types'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import classNames from 'classnames'
 import EventBus from '@renderer/bus'
 import RightContextMenu from './right-context-menu'
 import styles from './index.module.less'
 import './index.less'
+import { Settings } from 'lucide-react'
+import Setting from './setting'
+import classMenus from './setting/setting-config'
 
 function AppContent() {
   const PageRef = useRef<HTMLDivElement>(null)
+  const [openSetting, setSetting] = useState(false)
   const [height, setHeight] = useState(0)
   const [select, setSelect] = useState<string>()
   const [fileList, setFileList] = useState<FileConfig[]>([])
@@ -22,7 +34,18 @@ function AppContent() {
     if (DocDir) {
       readDocDir().then((data) => setFileList(data))
     }
-    window.api.createFile(globalDirConfig, '{}')
+    readSoftWareConfig().then((content) => {
+      let config: SettingMenu[]
+      if (!Object.keys(content).length) {
+        // 没有配置文件
+        window.api.createFile(globalDirConfig, '{}')
+        writeSoftWareConfig(classMenus)
+        config = classMenus
+      } else {
+        config = content
+      }
+      EditorCodeBlockConfigToString(config[0].content)
+    })
   }
 
   const handleResize = () => {
@@ -31,6 +54,7 @@ function AppContent() {
       if (!PageRef.current) return
       const { height } = PageRef.current.getBoundingClientRect()
       setHeight(height)
+      setGlobalHeight(height)
     }, 0)
   }
 
@@ -65,6 +89,9 @@ function AppContent() {
               </div>
             </RightContextMenu>
           ))}
+          <div className={styles.setting}>
+            <Settings onClick={() => setSetting(true)} />
+          </div>
         </div>
         <div className={styles.rightLayout}>
           {selectItem && <Editor select={selectItem} style={{ height: `${height}px` }} />}
@@ -76,6 +103,7 @@ function AppContent() {
             请先打开一个文档
           </div>
         </div>
+        {openSetting && <Setting open={openSetting} onclose={() => setSetting(false)} />}
       </div>
     </div>
   )

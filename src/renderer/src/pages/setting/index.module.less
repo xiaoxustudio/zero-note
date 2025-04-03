@@ -1,0 +1,122 @@
+.settingBox {
+  &Wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 4px;
+    display: flex;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    border: solid 2px #ebebef;
+    background-color: white;
+  }
+  &Content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+  }
+
+  &Header {
+    width: 100%;
+    display: flex;
+    padding: 0.4em 0.3em;
+    box-sizing: border-box;
+    user-select: none;
+  }
+
+  &Left {
+    flex: 1;
+  }
+  &Midden {
+    flex: 1;
+    display: flex;
+    -webkit-app-region: drag;
+    justify-content: center;
+    align-items: center;
+  }
+  &Right {
+    flex: 1;
+    display: flex;
+    justify-content: right;
+    svg {
+      color: #ccc;
+    }
+  }
+
+  /* 内容 */
+  &InnerContent {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    > div {
+      display: flex;
+      flex-direction: column;
+    }
+    > div:last-of-type {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+.setting {
+  &Left {
+    position: relative;
+  }
+  &Right {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    .scroll();
+  }
+  &Divider {
+    position: relative;
+    box-sizing: border-box;
+    &::after {
+      position: absolute;
+      content: '';
+      width: 100%;
+      min-height: 2px;
+      margin: 0.4em 0;
+      background: rgba(0, 0, 0, 0.04);
+      bottom: 0.1em;
+      left: 0;
+      box-sizing: border-box;
+    }
+  }
+  &Apply {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    padding: 0.4em 0.3em;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+}
+
+.settingItem {
+  width: 100%;
+  padding: 0.4em 0.3em;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  &Selected {
+    position: relative;
+    background: rgba(0, 0, 0, 0.04);
+    &::after {
+      top: 0;
+      left: 0.1em;
+      width: 2px;
+      height: 100%;
+      content: '';
+      background-color: #ccc;
+      position: absolute;
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { FileConfig } from '@renderer/types'
+import { FileConfig, SettingMenu, SettingSubMenu } from '@renderer/types'
 
 export const userDir = './zereNote/'
 export const userDocDir = './doc/'
@@ -6,6 +6,12 @@ export const globalDir = window.api.pathPush(window.api.getDocPath(), userDir)
 export const DocDir = window.api.pathPush(globalDir, userDocDir)
 export const DocDirConfig = pathPush(DocDir, './doc-config.json')
 export const globalDirConfig = pathPush(globalDir, './config.json')
+
+export let GlobalHeight = 0
+
+export const setGlobalHeight = (width: number) => {
+  GlobalHeight = width
+}
 
 export function UUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -24,6 +30,46 @@ export function ID(
     result += chars[Math.floor(Math.random() * chars.length)]
   }
   return result
+}
+
+/* 生成相关 */
+
+// 根据颜色配置生成相关颜色
+export function EditorCodeBlockConfigToString(obj: SettingSubMenu[]) {
+  document.querySelector('#codeBlockStyle')?.remove()
+  const styledom = document.createElement('style')
+  const colors: Record<string, string[]> = {}
+  for (const index in obj) {
+    const keywords = obj[index].name
+    const target = obj[index]
+    if (keywords !== '--' && target) {
+      // 查找相同颜色
+      const currentColor = target.value ? `${target.value}` : '#000000'
+      const find = Object.keys(colors).indexOf(currentColor)
+      if (~find) {
+        colors[currentColor].push(keywords)
+      } else {
+        colors[currentColor] = [keywords]
+      }
+    }
+  }
+  let str = ''
+  for (const color in colors) {
+    const keywords = colors[color]
+    let sub = ''
+    for (const k of keywords) {
+      sub += `.${k},`
+    }
+    sub = sub.slice(0, sub.length - 1)
+    sub += `{
+    color : ${color};
+    }\n`
+    str += sub
+  }
+  styledom.textContent = str
+  styledom.id = 'codeBlockStyle'
+  document.head.append(styledom)
+  return str
 }
 
 /* IO 相关 */
@@ -134,4 +180,18 @@ export function readDocDir() {
       return []
     }
   })
+}
+
+/* 编辑器 */
+
+// 读取软件配置
+export async function readSoftWareConfig() {
+  const t = await readFile(globalDirConfig)
+  if (t.content) return JSON.parse(t.content)
+  return {}
+}
+
+// 写入配置
+export async function writeSoftWareConfig(content: SettingMenu[]) {
+  createFile(globalDirConfig, JSON.stringify(content))
 }
