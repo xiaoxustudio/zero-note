@@ -1,4 +1,17 @@
 import { SettingMenu, SettingSubMenu } from '@renderer/types'
+import { DocDir } from '@renderer/utils'
+
+const commonNames = {
+  '--': {
+    title: '基础设置'
+  },
+  'save-path': {
+    type: 'directory',
+    title: '文档保存路径',
+    value: DocDir
+  }
+}
+
 const cssClassNames = {
   '--': {
     title: '代码块设置'
@@ -115,6 +128,12 @@ const classMenus: SettingMenu[] = [
   {
     name: '编辑器配置',
     content: [
+      ...(Object.keys(commonNames).map((v) => ({
+        type: commonNames[v].type,
+        title: commonNames[v].title,
+        name: v,
+        value: commonNames[v].value
+      })) as SettingSubMenu[]),
       ...(Object.keys(cssClassNames).map((v) => ({
         type: 'color',
         title: cssClassNames[v].title,

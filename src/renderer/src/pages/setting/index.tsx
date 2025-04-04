@@ -10,6 +10,7 @@ import {
   readSoftWareConfig,
   writeSoftWareConfig
 } from '@renderer/utils'
+import { Folder } from 'lucide-react'
 
 interface SettingProps {
   open: boolean
@@ -24,7 +25,7 @@ function Setting({ open, onclose }: SettingProps) {
 
   const initConfig = () => {
     readSoftWareConfig().then((content) => {
-      if (!Object.keys(content).length) {
+      if (!content) {
         config = classMenus
       } else {
         config = content
@@ -85,7 +86,7 @@ function Setting({ open, onclose }: SettingProps) {
                 {select && select.content.length
                   ? select.content.map((v, index) => (
                       <div
-                        key={v.name}
+                        key={v.name + v.title}
                         className={classNames(
                           styles.settingItem,
                           v.name === '--' && styles.settingDivider
@@ -114,6 +115,35 @@ function Setting({ open, onclose }: SettingProps) {
                               })
                             }
                           />
+                        )}
+                        {v.name !== '--' && v.type === 'directory' && (
+                          <div className={styles.settingDirectory}>
+                            <input value={(v.value ?? '') as string} readOnly />
+                            <Folder
+                              onClick={() => {
+                                window.api
+                                  .showOpenDialog({ properties: ['openDirectory'] })
+                                  .then(({ canceled, filePaths }) => {
+                                    if (!canceled)
+                                      setSelect((item) => {
+                                        if (!item) return null
+                                        let contents: SettingSubMenu[] = []
+                                        if (item && item.content.length) {
+                                          contents = item.content
+                                          contents[index] = {
+                                            ...item.content[index],
+                                            value: filePaths[0]
+                                          }
+                                        }
+                                        return {
+                                          ...item,
+                                          content: contents
+                                        }
+                                      })
+                                  })
+                              }}
+                            />
+                          </div>
                         )}
                       </div>
                     ))

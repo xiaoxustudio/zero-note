@@ -95,7 +95,7 @@ app.whenReady().then(() => {
   })
 
   // 显示打开对话框
-  ipcMain.handle('show-open-dialog', (event, options) => {
+  ipcMain.handle('showOpenDialog', (event, options) => {
     const win = getWindowFromEvent(event)
     return win && dialog.showOpenDialog(win, options)
   })

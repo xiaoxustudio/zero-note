@@ -21,7 +21,9 @@ const api = {
     electronAPI.ipcRenderer.sendSync('pathPush', path, distPath),
   openPath: (path: string) => electronAPI.ipcRenderer.send('openPath', path),
   showSaveDialog: (options: Electron.SaveDialogOptions) =>
-    electronAPI.ipcRenderer.invoke('showSaveDialog', options)
+    electronAPI.ipcRenderer.invoke('showSaveDialog', options),
+  showOpenDialog: (options: Electron.OpenDialogOptions) =>
+    electronAPI.ipcRenderer.invoke('showOpenDialog', options)
 }
 
 if (process.contextIsolated) {

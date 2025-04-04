@@ -1,11 +1,27 @@
+import EventBus from '@renderer/bus'
 import { FileConfig, SettingMenu, SettingSubMenu } from '@renderer/types'
 
+/* 默认配置 */
 export const userDir = './zereNote/'
 export const userDocDir = './doc/'
 export const globalDir = window.api.pathPush(window.api.getDocPath(), userDir)
-export const DocDir = window.api.pathPush(globalDir, userDocDir)
-export const DocDirConfig = pathPush(DocDir, './doc-config.json')
-export const globalDirConfig = pathPush(globalDir, './config.json')
+export let DocDir = window.api.pathPush(globalDir, userDocDir)
+export let DocDirConfig = pathPush(DocDir, './doc-config.json')
+export let globalDirConfig = pathPush(globalDir, './config.json')
+
+export let GlobalConfig = {}
+
+export const setGlobalConfig = async (content: SettingMenu[]) => {
+  GlobalConfig = content
+  const _g = (await readEditorConfig('save-path'))?.value
+  if (_g) {
+    DocDir = _g
+    DocDirConfig = pathPush(DocDir, './doc-config.json')
+    globalDirConfig = pathPush(globalDir, './config.json')
+    console.log(globalDirConfig, _g)
+    EventBus.emit('updateSider')
+  }
+}
 
 export let GlobalHeight = 0
 
@@ -185,10 +201,23 @@ export function readDocDir() {
 /* 编辑器 */
 
 // 读取软件配置
-export async function readSoftWareConfig() {
+export async function readSoftWareConfig(): Promise<SettingMenu[] | null> {
   const t = await readFile(globalDirConfig)
-  if (t.content) return JSON.parse(t.content)
-  return {}
+  if (t.content) return JSON.parse(t.content) as SettingMenu[]
+  return null
+}
+// 读取编辑器配置
+export async function readEditorConfig(name: string) {
+  const data = await readSoftWareConfig()
+  if (data) {
+    const newData = data as SettingMenu[]
+    const find = newData.find((v) => v.name === '编辑器配置')
+    if (find) {
+      const find1 = find.content.find((v) => v.name === name)
+      return find1 ? find1 : null
+    }
+  }
+  return null
 }
 
 // 写入配置

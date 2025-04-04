@@ -6,6 +6,7 @@ import {
   globalDirConfig,
   readDocDir,
   readSoftWareConfig,
+  setGlobalConfig,
   setGlobalHeight,
   writeSoftWareConfig
 } from '@renderer/utils'
@@ -36,7 +37,7 @@ function AppContent() {
     }
     readSoftWareConfig().then((content) => {
       let config: SettingMenu[]
-      if (!Object.keys(content).length) {
+      if (!content) {
         // 没有配置文件
         window.api.createFile(globalDirConfig, '{}')
         writeSoftWareConfig(classMenus)
@@ -44,6 +45,7 @@ function AppContent() {
       } else {
         config = content
       }
+      setGlobalConfig(config)
       EditorCodeBlockConfigToString(config[0].content)
     })
   }
