@@ -36,7 +36,8 @@
     "lucide-react": "^0.485.0",
     "mitt": "^3.0.1",
     "modern-screenshot": "^4.6.0",
-    "react-router-dom": "^7.4.1"
+    "react-router-dom": "^7.4.1",
+    "tiptap-markdown": "^0.8.10"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",

@@ -3,6 +3,7 @@ import TextStyle from '@tiptap/extension-text-style'
 import { Color } from '@tiptap/extension-color'
 import Highlight from '@tiptap/extension-highlight'
 import { all, createLowlight } from 'lowlight'
+import { Markdown } from 'tiptap-markdown'
 import CodeBlock from './extensions/codeblock'
 import CodeBlockLowlight from './extensions/code-block-lowlight'
 
@@ -23,6 +24,7 @@ const extensions = [
   CodeBlockLowlight.configure({
     lowlight
   }),
-  CodeBlock
+  CodeBlock,
+  Markdown
 ].filter((v) => !(['codeBlock'].includes(v.name) && !v.parent))
 export default extensions

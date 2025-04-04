@@ -1,4 +1,5 @@
 import { FileConfig, SettingMenu, SettingSubMenu } from '@renderer/types'
+import { Editor } from '@tiptap/react'
 export * from './html'
 
 /* 默认配置 */
@@ -10,6 +11,11 @@ export let DocDirConfig = pathPush(DocDir, './doc-config.json')
 export let globalDirConfig = pathPush(globalDir, './config.json')
 
 export let GlobalConfig = {} as SettingMenu[]
+export let GlobalEditor: Editor
+
+export const setGlobalEditor = (e: Editor) => {
+  GlobalEditor = e
+}
 
 export const setGlobalConfig = async (content: SettingMenu[]) => {
   GlobalConfig = content

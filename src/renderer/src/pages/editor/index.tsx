@@ -1,7 +1,7 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import { FileConfig } from '@renderer/types'
 import { CSSProperties, useEffect, useState } from 'react'
-import { readFile, changeDocConfig, changeDocContent } from '@renderer/utils/index'
+import { readFile, changeDocConfig, changeDocContent, setGlobalEditor } from '@renderer/utils/index'
 import EventBus from '@renderer/bus'
 import extensions from './extensions'
 import BubbleMenuContent from './bubble-menu'
@@ -24,6 +24,7 @@ function Editor({ select, style }: EditorProps) {
       content,
       onCreate({ editor }) {
         editor.view.dom.spellcheck = false
+        setGlobalEditor(editor)
       },
       onUpdate({ editor }) {
         const _c = editor.getHTML()

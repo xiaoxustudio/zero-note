@@ -4,6 +4,7 @@ import {
   CopyDocFile,
   createFile,
   deleteDocFile,
+  GlobalEditor,
   readDocContent,
   readEditorConfig,
   showSaveDialog,
@@ -48,10 +49,7 @@ function RightContextMenu({ item, className, children, ...props }: RightContextM
               showSaveDialog({
                 title: item.title,
                 defaultPath: `${window.api.getDocPath()}/${item.title}.html`,
-                filters: [
-                  { name: 'html', extensions: ['html'] },
-                  { name: '*', extensions: ['*'] }
-                ]
+                filters: [{ name: 'html', extensions: ['html'] }]
               }).then((r) => {
                 createFile(r.filePath, doc)
               })
@@ -59,7 +57,7 @@ function RightContextMenu({ item, className, children, ...props }: RightContextM
           }
         },
         {
-          name: 'image',
+          name: 'Image',
           async click() {
             const dom = document.querySelector('#editor-instance')! as HTMLElement
             const suffix = (await readEditorConfig('save-doc-image-suffix'))?.value || 'png'
@@ -90,6 +88,19 @@ function RightContextMenu({ item, className, children, ...props }: RightContextM
             link.download = `${item.title}.${suffix}`
             link.href = dataUrl
             link.click()
+          }
+        },
+        {
+          name: 'Markdown',
+          click() {
+            const md = `# ${item.title}\n${GlobalEditor.storage.markdown.getMarkdown()}`
+            showSaveDialog({
+              title: item.title,
+              defaultPath: `${window.api.getDocPath()}/${item.title}.md`,
+              filters: [{ name: 'markdown', extensions: ['md'] }]
+            }).then((r) => {
+              createFile(r.filePath, md)
+            })
           }
         }
       ]
