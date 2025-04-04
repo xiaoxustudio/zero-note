@@ -11,6 +11,7 @@ import {
   writeSoftWareConfig
 } from '@renderer/utils'
 import { Folder, RotateCcw } from 'lucide-react'
+import EventBus from '@renderer/bus'
 
 interface SettingProps {
   open: boolean
@@ -36,6 +37,9 @@ function Setting({ open, onclose }: SettingProps) {
 
   useEffect(() => {
     initConfig()
+    return () => {
+      EventBus.emit('updateSider')
+    }
   }, [])
 
   return (
@@ -92,8 +96,36 @@ function Setting({ open, onclose }: SettingProps) {
                           v.name === '--' && styles.settingDivider
                         )}
                       >
-                        {v.name === '--' ? <h3>{v.title}</h3> : <span>{v.title}</span>}
-                        {v.reset && <RotateCcw />}
+                        {v.name === '--' ? (
+                          <h3>{v.title}</h3>
+                        ) : (
+                          <span className={styles.settingTitle}>
+                            {v.title}
+                            {v.reset && (
+                              <RotateCcw
+                                className={styles.settingReset}
+                                size={16}
+                                onClick={() => {
+                                  setSelect((item) => {
+                                    if (!item) return null
+                                    let contents: SettingSubMenu[] = []
+                                    if (item && item.content.length) {
+                                      contents = item.content
+                                      contents[index] = {
+                                        ...item.content[index],
+                                        value: item.content[index].reset
+                                      }
+                                    }
+                                    return {
+                                      ...item,
+                                      content: contents
+                                    }
+                                  })
+                                }}
+                              />
+                            )}
+                          </span>
+                        )}
                         {v.name !== '--' && v.type === 'color' && (
                           <input
                             type="color"

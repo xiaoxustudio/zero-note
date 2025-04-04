@@ -133,7 +133,8 @@ const classMenus: SettingMenu[] = [
         type: commonNames[v].type,
         title: commonNames[v].title,
         name: v,
-        value: commonNames[v].value
+        value: commonNames[v].value,
+        reset: commonNames[v].reset ? commonNames[v].reset : undefined
       })) as SettingSubMenu[]),
       ...(Object.keys(cssClassNames).map((v) => ({
         type: 'color',
