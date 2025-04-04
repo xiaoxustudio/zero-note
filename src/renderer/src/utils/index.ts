@@ -8,7 +8,7 @@ export let DocDir = window.api.pathPush(globalDir, userDocDir)
 export let DocDirConfig = pathPush(DocDir, './doc-config.json')
 export let globalDirConfig = pathPush(globalDir, './config.json')
 
-export let GlobalConfig = {}
+export let GlobalConfig = {} as SettingMenu[]
 
 export const setGlobalConfig = async (content: SettingMenu[]) => {
   GlobalConfig = content
@@ -56,13 +56,18 @@ export function EditorCodeBlockConfigToString(obj: SettingSubMenu[]) {
     const keywords = obj[index].name
     const target = obj[index]
     if (keywords !== '--' && target) {
-      // 查找相同颜色
-      const currentColor = target.value ? `${target.value}` : '#000000'
-      const find = Object.keys(colors).indexOf(currentColor)
-      if (~find) {
-        colors[currentColor].push(keywords)
-      } else {
-        colors[currentColor] = [keywords]
+      switch (target.type) {
+        case 'color': {
+          // 查找相同颜色
+          const currentColor = target.value ? `${target.value}` : '#000000'
+          const find = Object.keys(colors).indexOf(currentColor)
+          if (~find) {
+            colors[currentColor].push(keywords)
+          } else {
+            colors[currentColor] = [keywords]
+          }
+          break
+        }
       }
     }
   }
