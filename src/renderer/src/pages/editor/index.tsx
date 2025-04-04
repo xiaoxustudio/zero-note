@@ -51,7 +51,7 @@ function Editor({ select, style }: EditorProps) {
   if (!editor || !select) return null
 
   return (
-    <div className={styles.container} style={style}>
+    <div id="editor-instance" className={styles.container} style={style}>
       <input
         className={styles.TitleInput}
         value={title}

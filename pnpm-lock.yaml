@@ -50,6 +50,9 @@ importers:
       mitt:
         specifier: ^3.0.1
         version: 3.0.1
+      modern-screenshot:
+        specifier: ^4.6.0
+        version: 4.6.0
       react-router-dom:
         specifier: ^7.4.1
         version: 7.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2903,6 +2906,9 @@ packages:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
     hasBin: true
+
+  modern-screenshot@4.6.0:
+    resolution: {integrity: sha512-L7osQAWpJiWY1ST1elhLRSGD5i7og5uoICqiXs38whAjWtIayp3cBMJmyML4iyJcBhRfHOyciq1g1Ft5G0QvSg==}
 
   mri@1.1.4:
     resolution: {integrity: sha512-6y7IjGPm8AzlvoUrwAaw1tLnUBudaS3752vcd8JtrpGGQn+rXIe63LFVHm/YMwtqAuh+LJPCFdlLYPWM1nYn6w==}
@@ -7607,6 +7613,8 @@ snapshots:
       minimist: 1.2.8
 
   mkdirp@1.0.4: {}
+
+  modern-screenshot@4.6.0: {}
 
   mri@1.1.4: {}
 

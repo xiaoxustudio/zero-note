@@ -18,7 +18,7 @@ export default defineConfig({
     css: {
       preprocessorOptions: {
         less: {
-          additionalData: `@import '${path.resolve(__dirname, './src/renderer/src/styles/global.less')}';`
+          additionalData: `@import '${path.resolve(__dirname, './src/renderer/src/assets/styles/global.less')}';`
         }
       }
     },

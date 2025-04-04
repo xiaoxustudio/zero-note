@@ -1,4 +1,5 @@
 import { FileConfig, SettingMenu, SettingSubMenu } from '@renderer/types'
+export * from './html'
 
 /* 默认配置 */
 export const userDir = './zereNote/'

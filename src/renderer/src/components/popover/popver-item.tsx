@@ -15,6 +15,7 @@ function PopoverItem({ item, onOpenChange }: PopoverItemProps) {
     <>
       {!item.children ? (
         <Button
+          className={styles.Btn}
           key={item.name}
           type="text"
           onClick={() => {
@@ -28,6 +29,7 @@ function PopoverItem({ item, onOpenChange }: PopoverItemProps) {
       ) : (
         <PopoverMenu open={open} menu={item.children} placement="rightBottom">
           <Button
+            className={styles.Btn}
             key={item.name}
             type="text"
             onClick={() => {
