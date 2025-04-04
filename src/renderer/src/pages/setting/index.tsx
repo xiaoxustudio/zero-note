@@ -10,7 +10,7 @@ import {
   readSoftWareConfig,
   writeSoftWareConfig
 } from '@renderer/utils'
-import { Folder } from 'lucide-react'
+import { Folder, RotateCcw } from 'lucide-react'
 
 interface SettingProps {
   open: boolean
@@ -93,6 +93,7 @@ function Setting({ open, onclose }: SettingProps) {
                         )}
                       >
                         {v.name === '--' ? <h3>{v.title}</h3> : <span>{v.title}</span>}
+                        {v.reset && <RotateCcw />}
                         {v.name !== '--' && v.type === 'color' && (
                           <input
                             type="color"

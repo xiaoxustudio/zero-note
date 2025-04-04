@@ -1,4 +1,3 @@
-import EventBus from '@renderer/bus'
 import { FileConfig, SettingMenu, SettingSubMenu } from '@renderer/types'
 
 /* 默认配置 */
@@ -18,8 +17,6 @@ export const setGlobalConfig = async (content: SettingMenu[]) => {
     DocDir = _g
     DocDirConfig = pathPush(DocDir, './doc-config.json')
     globalDirConfig = pathPush(globalDir, './config.json')
-    console.log(globalDirConfig, _g)
-    EventBus.emit('updateSider')
   }
 }
 

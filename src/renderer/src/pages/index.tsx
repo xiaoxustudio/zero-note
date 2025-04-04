@@ -32,9 +32,6 @@ function AppContent() {
     [fileList, select]
   )
   const handleUpdateSider = () => {
-    if (DocDir) {
-      readDocDir().then((data) => setFileList(data))
-    }
     readSoftWareConfig().then((content) => {
       let config: SettingMenu[]
       if (!content) {
@@ -45,8 +42,12 @@ function AppContent() {
       } else {
         config = content
       }
-      setGlobalConfig(config)
       EditorCodeBlockConfigToString(config[0].content)
+      setGlobalConfig(config).then(() => {
+        if (DocDir) {
+          readDocDir().then((data) => setFileList(data))
+        }
+      })
     })
   }
 

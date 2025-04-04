@@ -12,6 +12,8 @@ export interface SettingSubMenu {
   type: 'color' | 'text' | 'directory' // 类型
   title: string // 显示标题
   value: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reset?: any // 可重置（值）
 }
 
 export interface SettingMenu {

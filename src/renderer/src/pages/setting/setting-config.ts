@@ -1,5 +1,5 @@
 import { SettingMenu, SettingSubMenu } from '@renderer/types'
-import { DocDir } from '@renderer/utils'
+import { DocDir, globalDir, userDocDir } from '@renderer/utils'
 
 const commonNames = {
   '--': {
@@ -8,7 +8,8 @@ const commonNames = {
   'save-path': {
     type: 'directory',
     title: '文档保存路径',
-    value: DocDir
+    value: DocDir,
+    reset: window.api.pathPush(globalDir, userDocDir)
   }
 }
 
