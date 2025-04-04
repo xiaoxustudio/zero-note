@@ -1,5 +1,5 @@
 import styles from './index.module.less'
-import { Button } from 'antd'
+import { Button, Select } from 'antd'
 import { useEffect, useState } from 'react'
 import { SettingMenu, SettingSubMenu } from '@renderer/types'
 import classNames from 'classnames'
@@ -45,7 +45,7 @@ function Setting({ open, onclose }: SettingProps) {
   return (
     <>
       {open ? (
-        <div className={styles.settingBoxWrapper} style={{ height: `${GlobalHeight}px` }}>
+        <div className={styles.settingBoxWrapper} style={{ height: `${GlobalHeight + 2}px` }}>
           <div className={styles.settingBoxContent}>
             <div className={styles.settingBoxInnerContent}>
               <div className={styles.settingLeft}>
@@ -175,6 +175,34 @@ function Setting({ open, onclose }: SettingProps) {
                                       })
                                   })
                               }}
+                            />
+                          </div>
+                        )}
+                        {v.name !== '--' && v.type === 'option' && (
+                          <div className={styles.settingOption}>
+                            <Select
+                              className={styles.settingOptionSelect}
+                              defaultValue={v.value}
+                              value={v.value}
+                              style={{ width: 120 }}
+                              onChange={(value) => {
+                                setSelect((item) => {
+                                  if (!item) return null
+                                  let contents: SettingSubMenu[] = []
+                                  if (item && item.content.length) {
+                                    contents = item.content
+                                    contents[index] = {
+                                      ...item.content[index],
+                                      value
+                                    }
+                                  }
+                                  return {
+                                    ...item,
+                                    content: contents
+                                  }
+                                })
+                              }}
+                              options={v.option!.map((v) => ({ value: v, label: v }))}
                             />
                           </div>
                         )}

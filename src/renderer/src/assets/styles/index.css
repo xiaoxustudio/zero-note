@@ -37,6 +37,19 @@ body {
   row-gap: 0 !important;
 }
 
+/* select */
+.ant-select-dropdown {
+  border: solid 2px #ebebef;
+  box-shadow: none;
+}
+.ant-select-selector {
+  border-radius: initial !important;
+  border-color: #ebebef !important;
+}
+.ant-select-item-option-selected {
+  background-color: #ebebef !important;
+}
+
 ::selection {
   color: #fff;
   background: #088;

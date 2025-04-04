@@ -5,13 +5,15 @@ import {
   createFile,
   deleteDocFile,
   readDocContent,
+  readEditorConfig,
   showSaveDialog,
   toHtmlStr
 } from '@renderer/utils'
 import { FlexProps, PopoverProps } from 'antd'
 import { useState } from 'react'
 import PopoverMenu from '@renderer/components/popover/popover'
-import { domToPng } from 'modern-screenshot'
+import { domToJpeg, domToPng, domToSvg, domToWebp } from 'modern-screenshot'
+import { docImageExportSuffix } from './setting/setting-config'
 
 interface RightContextMenuProps extends Partial<PopoverProps & FlexProps> {
   item: FileConfig
@@ -58,33 +60,36 @@ function RightContextMenu({ item, className, children, ...props }: RightContextM
         },
         {
           name: 'image',
-          click() {
+          async click() {
             const dom = document.querySelector('#editor-instance')! as HTMLElement
-            domToPng(dom, {
+            const suffix = (await readEditorConfig('save-doc-image-suffix'))?.value || 'png'
+            const config = {
               backgroundColor: 'white',
               height: dom.scrollHeight,
               style: {
                 overflow: 'hidden'
               },
               quality: 1.0
-            }).then((dataUrl) => {
-              const link = document.createElement('a')
-              link.download = 'screenshot.png'
-              link.href = dataUrl
-              link.click()
-            })
-            // globalJspdf.html(dom, {
-            //   width: window.outerWidth,
-            //   windowWidth: window.outerWidth,
-            //   html2canvas: {
-            //     scale: 0.25
-            //   },
-            //   x: 0,
-            //   y: 0,
-            //   callback: (doc) => {
-            //     doc.save(`${item.title}.pdf`)
-            //   }
-            // })
+            }
+            let dataUrl = ''
+            switch (suffix as (typeof docImageExportSuffix)[number]) {
+              case 'png':
+                dataUrl = await domToPng(dom, config)
+                break
+              case 'jpeg':
+                dataUrl = await domToJpeg(dom, config)
+                break
+              case 'svg':
+                dataUrl = await domToSvg(dom, config)
+                break
+              case 'webp':
+                dataUrl = await domToWebp(dom, config)
+                break
+            }
+            const link = document.createElement('a')
+            link.download = `${item.title}.${suffix}`
+            link.href = dataUrl
+            link.click()
           }
         }
       ]

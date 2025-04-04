@@ -1,6 +1,8 @@
 import { SettingMenu, SettingSubMenu } from '@renderer/types'
 import { DocDir, globalDir, userDocDir } from '@renderer/utils'
 
+export const docImageExportSuffix = ['png', 'jpeg', 'svg', 'webp']
+
 const commonNames = {
   '--': {
     title: '基础设置'
@@ -10,6 +12,13 @@ const commonNames = {
     title: '文档保存路径',
     value: DocDir,
     reset: window.api.pathPush(globalDir, userDocDir)
+  },
+  'save-doc-image-suffix': {
+    type: 'option',
+    title: '默认导出图片类型',
+    option: docImageExportSuffix,
+    value: 'png',
+    reset: 'png'
   }
 }
 
@@ -134,7 +143,8 @@ const classMenus: SettingMenu[] = [
         title: commonNames[v].title,
         name: v,
         value: commonNames[v].value,
-        reset: commonNames[v].reset ? commonNames[v].reset : undefined
+        reset: commonNames[v].reset ? commonNames[v].reset : undefined,
+        option: commonNames[v].option ? commonNames[v].option : undefined
       })) as SettingSubMenu[]),
       ...(Object.keys(cssClassNames).map((v) => ({
         type: 'color',
