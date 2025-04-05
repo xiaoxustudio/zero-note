@@ -33,6 +33,8 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
   const BgColorRef = useRef<HTMLInputElement>(null) // 背景颜色
   const configSelect = useRef<configSelect>({ selectRanges: [], codeType: '' })
   const [codePopover, setCodePopover] = useState(false)
+  const [codeSearch, setCodeSearch] = useState('')
+
   useEffect(() => {
     const handleSelection = () => {
       const { state } = editor
@@ -164,19 +166,27 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
               align="start"
               onWheel={(e) => e.stopPropagation()}
             >
-              {Object.keys(all).map((v) => (
-                <Button
-                  key={v}
-                  type="text"
-                  onClick={() => {
-                    setCodePopover(false)
-                    configSelect.current.codeType = v
-                    editor.chain().focus().setCodeBlock({ language: v }).run()
-                  }}
-                >
-                  {v}
-                </Button>
-              ))}
+              <input
+                type="text"
+                value={codeSearch}
+                onChange={(e) => setCodeSearch(e.target.value)}
+              />
+              {Object.keys(all)
+                .filter((v) => v.includes(codeSearch))
+                .map((v) => (
+                  <Button
+                    key={v}
+                    type="text"
+                    onClick={() => {
+                      setCodePopover(false)
+                      configSelect.current.codeType = v
+                      editor.chain().focus().setCodeBlock({ language: v }).run()
+                    }}
+                    onBlur={() => setCodeSearch('')}
+                  >
+                    {v}
+                  </Button>
+                ))}
             </Flex>
           }
           trigger="click"
