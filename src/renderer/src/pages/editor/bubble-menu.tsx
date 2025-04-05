@@ -95,15 +95,19 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
         className={editor.isActive('heading', { level: 6 }) ? 'is-active' : ''}
         onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
       />
+      {/* 文字颜色 */}
       <span
         style={{
-          color: editor.getAttributes('color').color,
-          backgroundClip: editor.getAttributes('color').color
+          color: editor.getAttributes('textStyle').color,
+          backgroundClip: editor.getAttributes('textStyle').color
         }}
       >
         <Baseline
-          className={editor.isActive('color') ? 'is-active' : ''}
-          onClick={() => ColorRef.current?.click?.()}
+          className={editor.isActive('textStyle') ? 'is-active' : ''}
+          onClick={() => {
+            if (!editor.isActive('textStyle')) ColorRef.current?.click?.()
+            else editor.chain().focus().unsetColor().run()
+          }}
         />
         <input
           ref={ColorRef}
@@ -114,6 +118,7 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
           }}
         />
       </span>
+      {/* 背景颜色 */}
       <span
         style={{
           color: editor.getAttributes('highlight').color,
@@ -122,7 +127,10 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
       >
         <Palette
           className={editor.isActive('highlight') ? 'is-active' : ''}
-          onClick={() => BgColorRef.current?.click?.()}
+          onClick={() => {
+            if (!editor.isActive('highlight')) BgColorRef.current?.click?.()
+            else editor.chain().focus().toggleHighlight().run()
+          }}
         />
         <input
           ref={BgColorRef}
