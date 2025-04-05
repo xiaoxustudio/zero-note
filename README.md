@@ -11,6 +11,13 @@
 
 一款开源的轻量级笔记软件
 
+# 展示
+
+![image](https://github.com/user-attachments/assets/cc229a08-8adf-40a2-b163-86f89d7783da)
+
+![image](https://github.com/user-attachments/assets/07376d5b-739f-40e4-b2c9-53eb62222040)
+
+
 # 关于
 
 作者：[徐然](https://github.com/xiaoxustudio)
