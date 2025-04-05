@@ -1,5 +1,6 @@
 import { FileConfig } from '@renderer/types'
 import { EditorCodeBlockConfigToString, GlobalConfig } from '.'
+import { domToJpeg, domToPng, domToSvg, domToWebp, Options } from 'modern-screenshot'
 
 export function toHtmlStr(item: FileConfig, content: string) {
   return `
@@ -52,4 +53,23 @@ export function toHtmlStr(item: FileConfig, content: string) {
   </script>
   </body>
   </html>`
+}
+
+export async function HtmltoImage(dom: HTMLElement, config: Options, suffix = 'png') {
+  let dataUrl = ''
+  switch (suffix) {
+    case 'png':
+      dataUrl = await domToPng(dom, config)
+      break
+    case 'jpeg':
+      dataUrl = await domToJpeg(dom, config)
+      break
+    case 'svg':
+      dataUrl = await domToSvg(dom, config)
+      break
+    case 'webp':
+      dataUrl = await domToWebp(dom, config)
+      break
+  }
+  return dataUrl
 }

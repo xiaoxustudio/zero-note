@@ -5,6 +5,7 @@ import {
   createFile,
   deleteDocFile,
   GlobalEditor,
+  HtmltoImage,
   readDocContent,
   readEditorConfig,
   showSaveDialog,
@@ -13,8 +14,8 @@ import {
 import { FlexProps, PopoverProps } from 'antd'
 import { useState } from 'react'
 import PopoverMenu from '@renderer/components/popover/popover'
-import { domToJpeg, domToPng, domToSvg, domToWebp } from 'modern-screenshot'
-import { docImageExportSuffix } from './setting/setting-config'
+import jsPDF from 'jspdf'
+import { domToCanvas } from 'modern-screenshot'
 
 interface RightContextMenuProps extends Partial<PopoverProps & FlexProps> {
   item: FileConfig
@@ -69,21 +70,7 @@ function RightContextMenu({ item, className, children, ...props }: RightContextM
               },
               quality: 1.0
             }
-            let dataUrl = ''
-            switch (suffix as (typeof docImageExportSuffix)[number]) {
-              case 'png':
-                dataUrl = await domToPng(dom, config)
-                break
-              case 'jpeg':
-                dataUrl = await domToJpeg(dom, config)
-                break
-              case 'svg':
-                dataUrl = await domToSvg(dom, config)
-                break
-              case 'webp':
-                dataUrl = await domToWebp(dom, config)
-                break
-            }
+            const dataUrl = await HtmltoImage(dom, config, suffix)
             const link = document.createElement('a')
             link.download = `${item.title}.${suffix}`
             link.href = dataUrl
@@ -101,6 +88,62 @@ function RightContextMenu({ item, className, children, ...props }: RightContextM
             }).then((r) => {
               createFile(r.filePath, md)
             })
+          }
+        },
+        {
+          name: 'Pdf',
+          async click() {
+            const pdf = new jsPDF('p', 'mm', 'a4')
+            const dom = document.querySelector('#editor-instance')! as HTMLElement
+            const canvas = await domToCanvas(dom, {
+              backgroundColor: 'white',
+              height: dom.scrollHeight,
+              style: {
+                overflow: 'hidden'
+              },
+              quality: 1.0,
+              width: dom.clientWidth,
+              scale: 4
+            })
+            const ctx = canvas.getContext('2d')!
+            ctx.imageSmoothingEnabled = false
+            const a4w = 190
+            const a4h = 277 // A4大小，210mm x 297mm，四边各保留10mm的边距，显示区域190x277
+            const imgHeight = Math.floor((a4h * canvas.width) / a4w) // 按A4显示比例换算一页图像的像素高度
+            let renderedHeight = 0
+            while (renderedHeight < canvas.height) {
+              const page = document.createElement('canvas')
+              page.width = canvas.width
+              page.height = Math.min(imgHeight, canvas.height - renderedHeight) // 可能内容不足一页
+              // 用getImageData剪裁指定区域，并画到前面创建的canvas对象中
+              if (page && ctx) {
+                page
+                  .getContext('2d')!
+                  .putImageData(
+                    ctx.getImageData(
+                      0,
+                      renderedHeight,
+                      canvas.width,
+                      Math.min(imgHeight, canvas.height - renderedHeight)
+                    ),
+                    0,
+                    0
+                  )
+              }
+              pdf.addImage(
+                page.toDataURL('image/jpeg', 1.0),
+                'JPEG',
+                10,
+                10,
+                a4w,
+                Math.min(a4h, (a4w * page.height) / page.width)
+              ) // 添加图像到页面，保留10mm边距
+              renderedHeight += imgHeight
+              if (renderedHeight < canvas.height) {
+                pdf.addPage() // 如果后面还有内容，添加一个空页
+              }
+            }
+            pdf.save(`${item.title}.pdf`)
           }
         }
       ]
