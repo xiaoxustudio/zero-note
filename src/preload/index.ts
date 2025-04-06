@@ -19,6 +19,9 @@ const api = {
   getDocPath: () => electronAPI.ipcRenderer.sendSync('getDocPath'),
   pathPush: (path: string, distPath: string) =>
     electronAPI.ipcRenderer.sendSync('pathPush', path, distPath),
+  pathBasename: (path: string, suffix?: string) =>
+    electronAPI.ipcRenderer.sendSync('pathBasename', path, suffix),
+  pathDirname: (path: string) => electronAPI.ipcRenderer.sendSync('pathDirname', path),
   openPath: (path: string) => electronAPI.ipcRenderer.send('openPath', path),
   showSaveDialog: (options: Electron.SaveDialogOptions) =>
     electronAPI.ipcRenderer.invoke('showSaveDialog', options),

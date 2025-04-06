@@ -196,6 +196,12 @@ app.whenReady().then(() => {
   ipcMain.addListener('pathPush', async (event, targetPath, distPath) => {
     event.returnValue = path.join(targetPath, distPath)
   })
+  ipcMain.addListener('pathBasename', async (event, targetPath, suffix) => {
+    event.returnValue = path.basename(targetPath, suffix)
+  })
+  ipcMain.addListener('pathDirname', async (event, targetPath) => {
+    event.returnValue = path.dirname(targetPath)
+  })
 
   // 打开资源管理器路径
   ipcMain.on('openPath', (_, path) => {

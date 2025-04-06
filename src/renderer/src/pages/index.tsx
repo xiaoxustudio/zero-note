@@ -1,5 +1,5 @@
-import Editor from './editor'
-import Head from './head'
+import Editor from '../components/editor'
+import Head from '../components/head'
 import {
   DocDir,
   EditorCodeBlockConfigToString,
@@ -11,26 +11,21 @@ import {
   writeSoftWareConfig
 } from '@renderer/utils'
 import { FileConfig, SettingMenu } from '@renderer/types'
-import { useState, useEffect, useMemo, useRef } from 'react'
-import classNames from 'classnames'
+import { useState, useEffect, useRef } from 'react'
 import EventBus from '@renderer/bus'
-import RightContextMenu from './right-context-menu'
 import styles from './index.module.less'
 import './index.less'
 import { Settings } from 'lucide-react'
-import Setting from './setting'
-import classMenus from './setting/setting-config'
+import Setting from '../components/setting'
+import classMenus from '../components/setting/setting-config'
+import FileList from '../components/file-list'
 
 function AppContent() {
   const PageRef = useRef<HTMLDivElement>(null)
   const [openSetting, setSetting] = useState(false)
   const [height, setHeight] = useState(0)
-  const [select, setSelect] = useState<string>()
+  const [select, setSelect] = useState<FileConfig>()
   const [fileList, setFileList] = useState<FileConfig[]>([])
-  const selectItem = useMemo(
-    () => (select ? fileList.find((v) => v.id === select)! : undefined),
-    [fileList, select]
-  )
   const handleUpdateSider = () => {
     readSoftWareConfig().then((content) => {
       let config: SettingMenu[]
@@ -45,7 +40,10 @@ function AppContent() {
       EditorCodeBlockConfigToString(config[0].content)
       setGlobalConfig(config).then(() => {
         if (DocDir) {
-          readDocDir().then((data) => setFileList(data))
+          readDocDir().then((data) => {
+            console.log(data)
+            setFileList(data)
+          })
         }
       })
     })
@@ -59,6 +57,12 @@ function AppContent() {
       setHeight(height)
       setGlobalHeight(height)
     }, 0)
+  }
+
+  const onSelect = (node) => {
+    if (node.type === 'file') setSelect(node)
+    else setSelect(undefined)
+    console.log(node)
   }
 
   useEffect(() => {
@@ -75,33 +79,17 @@ function AppContent() {
       <Head />
       <div className={styles.Layout}>
         <div className={styles.leftLayout}>
-          {fileList.map((v) => (
-            <RightContextMenu
-              key={v.id}
-              className={styles.contextMenu}
-              item={v}
-              trigger="contextMenu"
-              arrow={false}
-              placement="rightBottom"
-            >
-              <div
-                className={classNames(styles.ListItem, v.id === select && 'is-selected')}
-                onClick={() => setSelect(v.id)}
-              >
-                {v.title}
-              </div>
-            </RightContextMenu>
-          ))}
+          <FileList files={fileList} basePath="/" onSelect={onSelect} select={select} />
           <div className={styles.setting}>
             <Settings onClick={() => setSetting(true)} />
           </div>
         </div>
         <div className={styles.rightLayout}>
-          {selectItem && <Editor select={selectItem} style={{ height: `${height}px` }} />}
+          {select && <Editor select={select} style={{ height: `${height}px` }} />}
           <div
             ref={PageRef}
             className={styles.noOpenDoc}
-            style={{ opacity: !selectItem ? 1 : 0, visibility: selectItem && 'hidden' }}
+            style={{ opacity: !select ? 1 : 0, visibility: select && 'hidden' }}
           >
             请先打开一个文档
           </div>

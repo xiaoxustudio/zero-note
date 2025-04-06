@@ -11,9 +11,10 @@ export interface PopoverItemProps {
 
 function PopoverItem({ item, onOpenChange }: PopoverItemProps) {
   const [open, setOpen] = useState(false)
+
   return (
     <>
-      {!item.children ? (
+      {!item.children || item.disabled ? (
         <Button
           className={styles.Btn}
           key={item.name}
@@ -23,6 +24,7 @@ function PopoverItem({ item, onOpenChange }: PopoverItemProps) {
             setOpen?.(false)
             onOpenChange?.(false)
           }}
+          disabled={item.disabled}
         >
           {item.name}
         </Button>
@@ -38,11 +40,15 @@ function PopoverItem({ item, onOpenChange }: PopoverItemProps) {
               onOpenChange?.(false)
             }}
             onMouseEnter={() => {
+              if (!item.disabled) return
+              console.log(123)
               setOpen(true)
             }}
             onMouseLeave={() => {
+              if (!item.disabled) return
               setOpen(false)
             }}
+            disabled={item.disabled}
           >
             {item.name}
             {item.children && <Ellipsis className={styles.More} size={16} />}

@@ -29,6 +29,8 @@ declare global {
       ) => ProcessMessage<{ directories: IOItem[]; files: IOItem[]; success: boolean }>
       getDocPath: () => string
       pathPush: (path: string, path1: string) => string
+      pathBasename: (path: string, suffix?: string) => string
+      pathDirname: (path: string) => string
       openPath: (path: string) => void
       showSaveDialog: (
         options: Electron.SaveDialogOptions

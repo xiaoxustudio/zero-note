@@ -1,7 +1,9 @@
 import EventBus from '@renderer/bus'
-import { FileConfig } from '@renderer/types'
+import { BaseConfig, FileConfig } from '@renderer/types'
 import {
   CopyDocFile,
+  createDocDir,
+  createDocFile,
   createFile,
   deleteDocFile,
   GlobalEditor,
@@ -18,14 +20,35 @@ import jsPDF from 'jspdf'
 import { domToCanvas } from 'modern-screenshot'
 
 interface RightContextMenuProps extends Partial<PopoverProps & FlexProps> {
-  item: FileConfig
+  item: BaseConfig | undefined
 }
 
 function RightContextMenu({ item, className, children, ...props }: RightContextMenuProps) {
   const [open, setOpen] = useState(false)
+  if (!item) return children
+  const basePath = item.realFilePath
+  const isFile = item.type === 'file'
   const menus = [
     {
+      name: '新建文件',
+      click() {
+        const dir = window.api.pathDirname(basePath)
+        createDocFile('无标题', '', dir)
+        EventBus.emit('updateSider')
+      }
+    },
+    {
+      name: '新建文件夹',
+      click() {
+        const dir = window.api.pathDirname(basePath)
+        const title = '无标题'
+        createDocDir(title, dir)
+        EventBus.emit('updateSider')
+      }
+    },
+    {
       name: '复制',
+      disabled: !isFile,
       click() {
         CopyDocFile(item.id, { title: item.title + '- 副本' }).then(() => {
           EventBus.emit('updateSider')
@@ -35,18 +58,20 @@ function RightContextMenu({ item, className, children, ...props }: RightContextM
     {
       name: '删除',
       click() {
-        deleteDocFile(item.id)
+        deleteDocFile(item.id, item.realFilePath)
         EventBus.emit('updateSider')
       }
     },
     {
       name: '导出为',
+      disabled: !document.querySelector('#editor-instance') || !isFile,
       children: [
         {
           name: 'HTML',
           click() {
+            if (item.type !== 'file') return
             readDocContent(item.id).then((content) => {
-              const doc = toHtmlStr(item, content!)
+              const doc = toHtmlStr(item as FileConfig, content!)
               showSaveDialog({
                 title: item.title,
                 defaultPath: `${window.api.getDocPath()}/${item.title}.html`,
@@ -151,7 +176,7 @@ function RightContextMenu({ item, className, children, ...props }: RightContextM
     {
       name: '在资源管理器中打开',
       click() {
-        window.api.openPath(item.realFilePath.substring(0, item.realFilePath.lastIndexOf('\\')))
+        window.api.openPath(basePath.substring(0, basePath.lastIndexOf('\\')))
       }
     }
   ]

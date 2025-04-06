@@ -1,0 +1,67 @@
+.FileList {
+  width: 100%;
+  .ellipsis();
+  :global {
+    svg {
+      transition: none;
+      margin: 0;
+      border-radius: initial;
+      &:hover {
+        background: transparent;
+      }
+    }
+    .ant-tree-list {
+      .ant-tree-treenode {
+        width: 100%;
+        line-height: 2.5em;
+      }
+    }
+    .ant-tree-title {
+      width: 100%;
+      .ellipsis();
+    }
+    .ant-tree-switcher {
+      width: 1em;
+      height: 1em;
+      &:before {
+        width: 1em;
+        height: 1em;
+        top: 50%;
+        border-radius: 4px;
+      }
+    }
+    .ant-tree-node-content-wrapper {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      .ellipsis();
+      &:hover {
+        background-color: transparent;
+      }
+      &.ant-tree-node-selected {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+.TitleRender {
+  width: calc(100% - 18px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  :global {
+    .ant-typography {
+      margin: 0;
+    }
+  }
+
+  &Title {
+    width: 100%;
+    .ellipsis();
+  }
+}

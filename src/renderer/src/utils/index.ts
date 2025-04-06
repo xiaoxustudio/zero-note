@@ -1,4 +1,4 @@
-import { FileConfig, SettingMenu, SettingSubMenu } from '@renderer/types'
+import { BaseConfig, FileConfig, SettingMenu, SettingSubMenu } from '@renderer/types'
 import { Editor } from '@tiptap/react'
 export * from './html'
 
@@ -50,6 +50,15 @@ export function ID(
     result += chars[Math.floor(Math.random() * chars.length)]
   }
   return result
+}
+
+export function findFileOrDirectoryForID(files: BaseConfig[], id?: string): BaseConfig | null {
+  if (!id) return null
+  for (const i of files) {
+    const findChildren = findFileOrDirectoryForID(i.children || [], id)
+    if (i.id === id || findChildren) return i || findChildren
+  }
+  return null
 }
 
 /* 生成相关 */
@@ -123,26 +132,53 @@ export function createFile(path: string, content: string) {
   return window.api.createFile(path, content)
 }
 
-/* 文档 */
-export function createDocFile(name: string, content: string) {
-  const id = ID()
-  const realFilePath = pathPush(DocDir, `${id}.znote`)
-  window.api.createFile(realFilePath, content)
-  window.api.createFile(
-    pathPush(DocDir, `~${id}.znote.json`),
-    JSON.stringify({
-      title: name,
-      id,
-      createdTime: Date.now(),
-      lastUpdatedTime: Date.now(),
-      realFilePath
-    })
-  )
+export function createDir(path: string) {
+  return window.api.createDir(path)
 }
 
-export function deleteDocFile(id: string) {
-  window.api.deletePath(pathPush(DocDir, `${id}.znote`))
-  window.api.deletePath(pathPush(DocDir, `~${id}.znote.json`))
+/* 文档 */
+
+export function createDocDir(title: string, baseDir = DocDir) {
+  const id = ID()
+  const dirPath = `${baseDir}\\${title}`
+  const realFilePath = pathPush(dirPath, `config.json`)
+  const config = {
+    title,
+    id,
+    createdTime: Date.now(),
+    lastUpdatedTime: Date.now(),
+    realFilePath
+  }
+  window.api.createFile(realFilePath, JSON.stringify(config))
+  return config
+}
+
+export function createDocFile(title: string, content: string, baseDir = DocDir) {
+  const id = ID()
+  const realFilePath = pathPush(baseDir, `${id}.znote`)
+  const config = {
+    title,
+    id,
+    createdTime: Date.now(),
+    lastUpdatedTime: Date.now(),
+    realFilePath
+  }
+  window.api.createFile(realFilePath, content)
+  window.api.createFile(pathPush(baseDir, `~${id}.znote.json`), JSON.stringify(config))
+  return config
+}
+
+export function deleteDocFile(id: string, baseDir = DocDir) {
+  const dirName = window.api.pathDirname(baseDir)
+  const rpath = pathPush(dirName, `${id}.znote`)
+  const rfpath = pathPush(dirName, `~${id}.znote.json`)
+  if (fileExists(rfpath)) {
+    window.api.deletePath(rpath)
+    window.api.deletePath(rfpath)
+  } else {
+    // 删除文件夹
+    window.api.deletePath(dirName)
+  }
 }
 
 export async function CopyDocFile(id: string, config?: Partial<FileConfig & { content: string }>) {
@@ -179,27 +215,45 @@ export async function readDocContent(id: string) {
 }
 
 export async function changeDocConfig(id: string, content: Record<string, unknown>) {
-  window.api.createFile(pathPush(DocDir, `~${id}.znote.json`), JSON.stringify(content))
+  const fileList = await readDocDir()
+  const find = findFileOrDirectoryForID(fileList, id)
+  if (find) {
+    const baseName = window.api.pathDirname(find.realFilePath)
+    window.api.createFile(`${baseName}\\~${id}.znote.json`, JSON.stringify(content))
+  }
 }
 
 export async function changeDocContent(id: string, content: string) {
-  window.api.createFile(pathPush(DocDir, `${id}.znote`), content || '')
+  const fileList = await readDocDir()
+  const find = findFileOrDirectoryForID(fileList, id)
+  if (find) window.api.createFile(find.realFilePath, content || '')
 }
 
-export function readDocDir() {
-  return window.api.readDir(DocDir).then(({ success, files }) => {
+export function readDocDir(basePath = DocDir) {
+  return window.api.readDir(basePath).then(({ success, files, directories }) => {
     if (success) {
       const data = files
-        .filter((v) => v.name.startsWith('~') && v.name.endsWith('.json'))
+        .filter((v) => (v.name.startsWith('~') && v.name.endsWith('.json')) || v.type === 'dir')
         .map(async (v) => {
           const config = JSON.parse((await readFile(v.path)).content || '')
+          config.type = 'file'
           if (fileExists(config.realFilePath)) {
             return { ...config, file: true }
           } else {
             return { ...config, file: false }
           }
         })
-      return Promise.all(data)
+      const dirDatas = directories.map(async (v) => {
+        const config = JSON.parse((await readFile(`${v.path}\\config.json`)).content || '')
+        config.type = 'directory'
+        config.children = await readDocDir(v.path)
+        if (fileExists(config.realFilePath)) {
+          return { ...config, file: true }
+        } else {
+          return { ...config, file: false }
+        }
+      })
+      return Promise.all([...data, ...dirDatas])
     } else {
       window.api.createFile(DocDirConfig, '{}')
       return []

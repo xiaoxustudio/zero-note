@@ -1,10 +1,20 @@
-export interface FileConfig {
-  title: string
+export interface BaseConfig {
+  type: string
   id: string
-  createdTime: number
   lastUpdatedTime: number
   realFilePath: string
+  createdTime: number
+  title: string
   file: boolean // realFilePath 是否存在
+  children: BaseConfig[]
+}
+
+export interface FileConfig extends BaseConfig {
+  type: 'file'
+}
+
+export interface DirectoryConfig extends BaseConfig {
+  type: 'directory'
 }
 
 export interface SettingSubMenu {
