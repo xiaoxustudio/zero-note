@@ -39,12 +39,7 @@ function AppContent() {
       }
       EditorCodeBlockConfigToString(config[0].content)
       setGlobalConfig(config).then(() => {
-        if (DocDir) {
-          readDocDir().then((data) => {
-            console.log(data)
-            setFileList(data)
-          })
-        }
+        if (DocDir) readDocDir().then((data) => setFileList(data))
       })
     })
   }
@@ -62,7 +57,6 @@ function AppContent() {
   const onSelect = (node) => {
     if (node.type === 'file') setSelect(node)
     else setSelect(undefined)
-    console.log(node)
   }
 
   useEffect(() => {

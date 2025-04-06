@@ -34,8 +34,7 @@ function Editor({ select, style }: EditorProps) {
     [content]
   )
   useEffect(() => {
-    changeDocConfig(select.id, { ...select, title })
-    EventBus.emit('updateSider')
+    changeDocConfig(select.id, { ...select, title }).then(() => EventBus.emit('updateSider'))
   }, [title]) //eslint-disable-line
 
   useEffect(() => {
