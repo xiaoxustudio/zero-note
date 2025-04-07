@@ -1,7 +1,12 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import { FileConfig } from '@renderer/types'
 import { CSSProperties, useEffect, useState } from 'react'
-import { readFile, changeDocConfig, changeDocContent, setGlobalEditor } from '@renderer/utils/index'
+import {
+  changeDocConfig,
+  changeDocContent,
+  setGlobalEditor,
+  readDocContent
+} from '@renderer/utils/index'
 import EventBus from '@renderer/bus'
 import extensions from './extensions'
 import BubbleMenuContent from './bubble-menu'
@@ -31,7 +36,7 @@ function Editor({ select, style }: EditorProps) {
         if (select) changeDocContent(select.id, _c)
       }
     },
-    [content]
+    [content, select]
   )
   useEffect(() => {
     changeDocConfig(select.id, { ...select, title }).then(() => EventBus.emit('updateSider'))
@@ -39,13 +44,10 @@ function Editor({ select, style }: EditorProps) {
 
   useEffect(() => {
     if (select)
-      readFile(select.realFilePath).then((data) => {
-        if (data.success) {
-          setContent(data.content || '')
-          setTitle(select.title || '')
-        }
+      readDocContent(select.id).then(async (data) => {
+        setTitle(select.title || '')
+        setContent(data || '')
       })
-    // console.log(select)
   }, [select])
 
   if (!editor || !select) return null
