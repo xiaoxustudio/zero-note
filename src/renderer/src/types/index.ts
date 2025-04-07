@@ -17,6 +17,8 @@ export interface DirectoryConfig extends BaseConfig {
   type: 'directory'
 }
 
+export type SelectConfig = BaseConfig | FileConfig | DirectoryConfig
+
 export interface SettingSubMenu {
   name: string // 子菜单key
   type: 'color' | 'text' | 'directory' | 'option' // 类型

@@ -1,4 +1,4 @@
-import { BaseConfig, FileConfig, SettingMenu, SettingSubMenu } from '@renderer/types'
+import { BaseConfig, FileConfig, SelectConfig, SettingMenu, SettingSubMenu } from '@renderer/types'
 import { Editor } from '@tiptap/react'
 export * from './html'
 
@@ -128,6 +128,10 @@ export function readDir(path: string) {
   return window.api.readDir(path)
 }
 
+export function rename(path: string, path1: string) {
+  return window.api.rename(path, path1)
+}
+
 export function createFile(path: string, content: string) {
   return window.api.createFile(path, content)
 }
@@ -214,12 +218,21 @@ export async function readDocContent(id: string) {
   return (await readFile(path)).content
 }
 
-export async function changeDocConfig(id: string, content: Record<string, unknown>) {
+export async function changeDocConfig(id: string, content: Record<string, unknown> | SelectConfig) {
   const fileList = await readDocDir()
   const find = findFileOrDirectoryForID(fileList, id)
   if (find) {
-    const baseName = window.api.pathDirname(find.realFilePath)
-    window.api.createFile(`${baseName}\\~${id}.znote.json`, JSON.stringify(content))
+    switch (find.type) {
+      case 'file': {
+        const baseName = window.api.pathDirname(find.realFilePath)
+        window.api.createFile(`${baseName}\\~${id}.znote.json`, JSON.stringify(content))
+        break
+      }
+      case 'directory': {
+        window.api.createFile(find.realFilePath, JSON.stringify(content))
+        break
+      }
+    }
   }
 }
 
@@ -227,6 +240,29 @@ export async function changeDocContent(id: string, content: string) {
   const fileList = await readDocDir()
   const find = findFileOrDirectoryForID(fileList, id)
   if (find) window.api.createFile(find.realFilePath, content || '')
+}
+
+export async function renameFileOrDirectory(id: string, newName: string) {
+  const fileList = await readDocDir()
+  const find = findFileOrDirectoryForID(fileList, id)
+  if (find) {
+    switch (find.type) {
+      case 'file': {
+        find.title = newName
+        await changeDocConfig(id, find)
+        break
+      }
+      case 'directory': {
+        find.title = newName
+        find.lastUpdatedTime = Date.now()
+        const base = window.api.pathDirname(find.realFilePath)
+        const newBase = `${base.substring(0, base.lastIndexOf('\\'))}\\${newName}`
+        find.realFilePath = `${newBase}\\config.json`
+        await changeDocConfig(id, find).then(() => rename(base, newBase))
+        break
+      }
+    }
+  }
 }
 
 export function readDocDir(basePath = DocDir) {

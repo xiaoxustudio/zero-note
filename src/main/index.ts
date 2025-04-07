@@ -192,6 +192,15 @@ app.whenReady().then(() => {
       return { success: false, error: error.message }
     }
   })
+  // 更改文件夹名称
+  ipcMain.handle('rename', async (_, currentTPath, targetPath) => {
+    try {
+      fs.renameSync(currentTPath, targetPath)
+      return { success: true }
+    } catch (error: any) {
+      return { success: false, error: error.message }
+    }
+  })
   // 路径拼接
   ipcMain.addListener('pathPush', async (event, targetPath, distPath) => {
     event.returnValue = path.join(targetPath, distPath)

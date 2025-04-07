@@ -21,9 +21,16 @@ import { domToCanvas } from 'modern-screenshot'
 
 interface RightContextMenuProps extends Partial<PopoverProps & FlexProps> {
   item: BaseConfig | undefined
+  onRename: () => void
 }
 
-function RightContextMenu({ item, className, children, ...props }: RightContextMenuProps) {
+function RightContextMenu({
+  item,
+  className,
+  children,
+  onRename,
+  ...props
+}: RightContextMenuProps) {
   const [open, setOpen] = useState(false)
   if (!item) return children
   const basePath = item.realFilePath
@@ -60,6 +67,12 @@ function RightContextMenu({ item, className, children, ...props }: RightContextM
       click() {
         deleteDocFile(item.id, item.realFilePath)
         EventBus.emit('updateSider')
+      }
+    },
+    {
+      name: '重命名',
+      click() {
+        onRename()
       }
     },
     {

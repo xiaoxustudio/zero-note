@@ -50,6 +50,12 @@ body {
   background-color: #ebebef !important;
 }
 
+/* modal */
+.ant-modal .ant-modal-content {
+  box-shadow: none;
+  border: solid 2px #ebebef;
+}
+
 ::selection {
   color: #fff;
   background: #088;

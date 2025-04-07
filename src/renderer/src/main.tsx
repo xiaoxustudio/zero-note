@@ -9,6 +9,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       components: {
         Tree: {
           indentSize: 15
+        },
+        Modal: {
+          colorBgMask: 'rgba(0,0,0,0.01)'
         }
       }
     }}

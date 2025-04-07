@@ -24,6 +24,7 @@ declare global {
       readFile: (path: string) => ProcessMessage
       deletePath: (path: string) => ProcessMessage
       createDir: (path: string) => ProcessMessage
+      rename: (path: string, path1: string) => ProcessMessage
       readDir: (
         path: string
       ) => ProcessMessage<{ directories: IOItem[]; files: IOItem[]; success: boolean }>

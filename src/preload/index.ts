@@ -16,6 +16,8 @@ const api = {
   readFile: (path: string) => electronAPI.ipcRenderer.invoke('readFile', path),
   deletePath: (path: string) => electronAPI.ipcRenderer.invoke('deletePath', path),
   readDir: (path: string) => electronAPI.ipcRenderer.invoke('readDir', path),
+  rename: (path: string, distPath: string) =>
+    electronAPI.ipcRenderer.invoke('rename', path, distPath),
   getDocPath: () => electronAPI.ipcRenderer.sendSync('getDocPath'),
   pathPush: (path: string, distPath: string) =>
     electronAPI.ipcRenderer.sendSync('pathPush', path, distPath),
