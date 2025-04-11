@@ -239,18 +239,40 @@ app.whenReady().then(() => {
   })
 
   // 下载图片
-  ipcMain.handle('downloaImage', async (_, url: string, savePath: string) => {
+  ipcMain.handle('downloadImage', async (_, url: string, savePath: string) => {
     const imagesDir = savePath || path.join(app.getPath('userData'), 'images')
     fs.mkdirSync(imagesDir, { recursive: true })
+
     try {
       const response = await fetch(url)
-      const ext = url.split('.').pop()?.split(/[#?]/)[0] || 'png'
-      const filename = `${Date.now()}.${ext}`
+      const parsedUrl = new URL(url)
+
+      const pathname = parsedUrl.pathname
+      const basename = path.basename(pathname)
+
+      const imageExtensions = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'])
+
+      const extMatch = basename.match(/\.([a-z0-9]+)(?:[\\?#]|$)/i)
+      let ext = extMatch ? extMatch[1].toLowerCase() : 'png'
+
+      if (!imageExtensions.has(ext)) {
+        const contentType = response.headers.get('content-type')
+        const mimeExtMap: { [key: string]: string } = {
+          'image/jpeg': 'jpg',
+          'image/png': 'png',
+          'image/gif': 'gif',
+          'image/webp': 'webp',
+          'image/svg+xml': 'svg'
+        }
+        ext = (contentType && mimeExtMap[contentType]) || 'png'
+      }
+
+      const cleanFilename = `${Date.now()}`.replace(/[^a-z0-9]/gi, '_') + `.${ext}`
       const buffer = Buffer.from(await response.arrayBuffer())
-      const filePath = path.join(imagesDir, filename)
+      const filePath = path.join(imagesDir, cleanFilename)
 
       fs.writeFileSync(filePath, buffer)
-      return { success: true, content: `local-image://${filename}` }
+      return { success: true, content: `local-image://${cleanFilename}` }
     } catch (error: any) {
       return { success: false, error: error.message }
     }

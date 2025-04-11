@@ -55,7 +55,7 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
         })
       })
       // 将当前选择的数据存储
-      configSelect.current.codeType = nodeRanges[0].node.attrs['language'] || ''
+      configSelect.current.codeType = nodeRanges[0]?.node.attrs['language'] || ''
       configSelect.current.selectRanges = nodeRanges
     }
     editor.on('selectionUpdate', handleSelection)

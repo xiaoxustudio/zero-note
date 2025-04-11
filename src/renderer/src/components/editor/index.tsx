@@ -8,6 +8,7 @@ import {
   readDocContent
 } from '@renderer/utils/index'
 import EventBus from '@renderer/bus'
+import { Fragment } from '@tiptap/pm/model'
 import extensions from './extensions'
 import BubbleMenuContent from './bubble-menu'
 import styles from './index.module.less'
@@ -29,23 +30,32 @@ function Editor({ select, style }: EditorProps) {
       content,
       onCreate({ editor }) {
         editor.view.dom.spellcheck = false
+        editor.view.dom.addEventListener('paste', (e) => e.preventDefault())
         setGlobalEditor(editor)
       },
       onUpdate({ editor }) {
         const _c = editor.getHTML()
         if (select) changeDocContent(select.id, _c)
       },
-      onPaste(event) {
+      onPaste(event, slice) {
         event.preventDefault()
         const formats = window.api.readClipboardFormats()
         const html = window.api.readClipboardHTML()
         // 处理粘贴图片，将图片下载到本地并链接
         if (formats.some((v) => v.includes('image'))) {
           const match = html.match(/https?:\/\/(.[^"]*)/gi)
-          if (match) {
+          if (match && editor) {
             window.api.downloadImage(match[0]).then(({ success, content }) => {
-              if (success && editor) {
-                editor.chain().focus().setImage({ src: content! }).run()
+              const { state, view } = editor
+              const { from, to } = state.selection
+              if (success) {
+                const image = state.schema.nodes.image.create({
+                  src: content!,
+                  alt: slice.content.content[0].attrs.alt || ''
+                })
+                const fragment = Fragment.from(image)
+                const tr = state.tr.replaceWith(from, to, fragment)
+                view.dispatch(tr)
               }
             })
           }
@@ -65,13 +75,6 @@ function Editor({ select, style }: EditorProps) {
         setTitle(select.title || '')
         setContent(data || '')
       })
-    const onPaste = (event) => {
-      event.preventDefault()
-    }
-    window.addEventListener('paste', onPaste)
-    return () => {
-      window.removeEventListener('paste', onPaste)
-    }
   }, [select])
 
   if (!editor || !select) return null

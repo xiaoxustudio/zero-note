@@ -34,7 +34,7 @@ const api = {
   readClipboardHTML: (type) => clipboard.readHTML(type),
   readClipboardFormats: (type) => clipboard.availableFormats(type),
   downloadImage: (url: string, savePath?: string) =>
-    electronAPI.ipcRenderer.invoke('downloaImage', url, savePath)
+    electronAPI.ipcRenderer.invoke('downloadImage', url, savePath)
 }
 
 if (process.contextIsolated) {

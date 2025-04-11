@@ -13,12 +13,12 @@ import {
 import { FileConfig, SettingMenu } from '@renderer/types'
 import { useState, useEffect, useRef } from 'react'
 import EventBus from '@renderer/bus'
-import styles from './index.module.less'
-import './index.less'
 import { Settings } from 'lucide-react'
 import Setting from '../components/setting'
 import classMenus from '../components/setting/setting-config'
 import FileList from '../components/file-list'
+import styles from './index.module.less'
+import './index.less'
 
 function AppContent() {
   const PageRef = useRef<HTMLDivElement>(null)

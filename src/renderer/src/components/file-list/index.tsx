@@ -3,10 +3,10 @@ import { Tree } from 'antd'
 import classNames from 'classnames'
 import { genFileList } from './utils'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import styles from './index.module.less'
 import TitleRender from './title-render'
 import { DataNode } from 'antd/es/tree'
 import useModal from 'antd/es/modal/useModal'
+import styles from './index.module.less'
 
 interface FileListProps {
   files: FileConfig[] | DirectoryConfig[]
