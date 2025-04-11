@@ -6,6 +6,7 @@ import { all, createLowlight } from 'lowlight'
 import { Markdown } from 'tiptap-markdown'
 import CodeBlock from './extensions/codeblock'
 import CodeBlockLowlight from './extensions/code-block-lowlight'
+import Image from '@tiptap/extension-image'
 
 const lowlight = createLowlight(all)
 
@@ -18,6 +19,7 @@ const extensions = [
       }
     }
   }),
+  Image,
   Highlight.configure({ multicolor: true }),
   TextStyle,
   Color.configure({ types: ['textStyle'] }),

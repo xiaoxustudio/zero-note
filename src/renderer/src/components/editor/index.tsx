@@ -34,10 +34,27 @@ function Editor({ select, style }: EditorProps) {
       onUpdate({ editor }) {
         const _c = editor.getHTML()
         if (select) changeDocContent(select.id, _c)
+      },
+      onPaste(event) {
+        event.preventDefault()
+        const formats = window.api.readClipboardFormats()
+        const html = window.api.readClipboardHTML()
+        // 处理粘贴图片，将图片下载到本地并链接
+        if (formats.some((v) => v.includes('image'))) {
+          const match = html.match(/https?:\/\/(.[^"]*)/gi)
+          if (match) {
+            window.api.downloadImage(match[0]).then(({ success, content }) => {
+              if (success && editor) {
+                editor.chain().focus().setImage({ src: content! }).run()
+              }
+            })
+          }
+        }
       }
     },
     [content, select]
   )
+
   useEffect(() => {
     changeDocConfig(select.id, { ...select, title }).then(() => EventBus.emit('updateSider'))
   }, [title]) //eslint-disable-line
@@ -48,6 +65,13 @@ function Editor({ select, style }: EditorProps) {
         setTitle(select.title || '')
         setContent(data || '')
       })
+    const onPaste = (event) => {
+      event.preventDefault()
+    }
+    window.addEventListener('paste', onPaste)
+    return () => {
+      window.removeEventListener('paste', onPaste)
+    }
   }, [select])
 
   if (!editor || !select) return null

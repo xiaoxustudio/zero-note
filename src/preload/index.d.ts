@@ -8,6 +8,8 @@ interface IOItem {
   path: string
 }
 
+type ClipboardType = 'selection' | 'clipboard'
+
 declare global {
   interface Window {
     electron: ElectronAPI
@@ -39,6 +41,11 @@ declare global {
       showOpenDialog: (
         options: Electron.OpenDialogOptions
       ) => Promise<Electron.OpenDialogReturnValue>
+      readClipboardFormats: (type?: ClipboardType) => string[]
+      readClipboardImage: (type?: ClipboardType) => Electron.NativeImage
+      readClipboardText: (type?: ClipboardType) => string
+      readClipboardHTML: (type?: ClipboardType) => string
+      downloadImage: (url: string, savePath?: string) => ProcessMessage
     }
   }
 }

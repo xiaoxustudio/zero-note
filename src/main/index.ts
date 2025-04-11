@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog, protocol, net } from 'electron'
 import path, { normalize } from 'path'
 import fs from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -47,6 +47,27 @@ const getWindowFromEvent = (event: Electron.IpcMainInvokeEvent) => {
   const win = BrowserWindow.fromWebContents(event.sender)
   return win
 }
+
+// 注册自定义协议
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'local-image',
+    privileges: {
+      secure: true, // 让 Electron 信任这个方式就像信任网站的 HTTPS 一样
+      supportFetchAPI: true, // 允许我们像在网页上那样请求资源
+      standard: true, // 让这种方式的网址看起来像普通的网址
+      bypassCSP: true, // 允许我们绕过一些安全限制
+      stream: true // 允许我们以流的形式读取文件，这对于大文件很有用
+    }
+  }
+])
+app.on('session-created', () => {
+  protocol.handle('local-image', (req) => {
+    const url = new URL(req.url)
+    const realtivePath = path.join(app.getPath('userData'), 'images')
+    return net.fetch(`file:///${realtivePath}/${url.host}`)
+  })
+})
 
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
@@ -215,6 +236,24 @@ app.whenReady().then(() => {
   // 打开资源管理器路径
   ipcMain.on('openPath', (_, path) => {
     shell.openPath(normalize(path))
+  })
+
+  // 下载图片
+  ipcMain.handle('downloaImage', async (_, url: string, savePath: string) => {
+    const imagesDir = savePath || path.join(app.getPath('userData'), 'images')
+    fs.mkdirSync(imagesDir, { recursive: true })
+    try {
+      const response = await fetch(url)
+      const ext = url.split('.').pop()?.split(/[#?]/)[0] || 'png'
+      const filename = `${Date.now()}.${ext}`
+      const buffer = Buffer.from(await response.arrayBuffer())
+      const filePath = path.join(imagesDir, filename)
+
+      fs.writeFileSync(filePath, buffer)
+      return { success: true, content: `local-image://${filename}` }
+    } catch (error: any) {
+      return { success: false, error: error.message }
+    }
   })
 
   createWindow()

@@ -25,6 +25,7 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@tiptap/extension-color": "^2.11.6",
     "@tiptap/extension-highlight": "^2.11.6",
+    "@tiptap/extension-image": "^2.11.7",
     "@tiptap/extension-text-style": "^2.11.6",
     "@tiptap/pm": "^2.11.6",
     "@tiptap/react": "^2.11.6",

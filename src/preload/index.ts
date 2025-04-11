@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron'
+import { contextBridge, clipboard } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 const api = {
@@ -28,7 +28,13 @@ const api = {
   showSaveDialog: (options: Electron.SaveDialogOptions) =>
     electronAPI.ipcRenderer.invoke('showSaveDialog', options),
   showOpenDialog: (options: Electron.OpenDialogOptions) =>
-    electronAPI.ipcRenderer.invoke('showOpenDialog', options)
+    electronAPI.ipcRenderer.invoke('showOpenDialog', options),
+  readClipboardImage: (type) => clipboard.readImage(type),
+  readClipboardText: (type) => clipboard.readText(type),
+  readClipboardHTML: (type) => clipboard.readHTML(type),
+  readClipboardFormats: (type) => clipboard.availableFormats(type),
+  downloadImage: (url: string, savePath?: string) =>
+    electronAPI.ipcRenderer.invoke('downloaImage', url, savePath)
 }
 
 if (process.contextIsolated) {
