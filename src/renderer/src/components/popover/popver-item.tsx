@@ -4,12 +4,17 @@ import { Ellipsis } from 'lucide-react'
 import { useState } from 'react'
 import styles from './popover-item.module.less'
 
+type EventInjectType = {
+  [k in keyof WindowEventMap]?: Record<string, any>
+}
+
 export interface PopoverItemProps {
   item: Menus
   onOpenChange?: (n: boolean) => void
+  eventInject?: EventInjectType
 }
 
-function PopoverItem({ item, onOpenChange }: PopoverItemProps) {
+function PopoverItem({ item, eventInject, onOpenChange }: PopoverItemProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -20,7 +25,7 @@ function PopoverItem({ item, onOpenChange }: PopoverItemProps) {
           key={item.name}
           type="text"
           onClick={() => {
-            item.click?.()
+            item.click?.(eventInject ? eventInject['click'] : undefined)
             setOpen?.(false)
             onOpenChange?.(false)
           }}
@@ -35,13 +40,12 @@ function PopoverItem({ item, onOpenChange }: PopoverItemProps) {
             key={item.name}
             type="text"
             onClick={() => {
-              item.click?.()
+              item.click?.(eventInject ? eventInject['click'] : undefined)
               setOpen?.(false)
               onOpenChange?.(false)
             }}
             onMouseEnter={() => {
               if (!item.disabled) return
-              console.log(123)
               setOpen(true)
             }}
             onMouseLeave={() => {

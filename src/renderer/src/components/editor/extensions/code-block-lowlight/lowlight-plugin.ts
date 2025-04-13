@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { findChildren } from '@tiptap/core'
 import { Node as ProsemirrorNode } from '@tiptap/pm/model'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
-// @ts-ignore
+
 import highlight from 'highlight.js/lib/core'
 
 function parseNodes(nodes: any[], className: string[] = []): { text: string; classes: string[] }[] {
@@ -121,7 +122,6 @@ export function LowlightPlugin({
             // (for example, a transaction that affects the entire document).
             // Such transactions can happen during collab syncing via y-prosemirror, for example.
             transaction.steps.some((step) => {
-              // @ts-ignore
               return (
                 // @ts-ignore
                 step.from !== undefined &&

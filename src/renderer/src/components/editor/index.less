@@ -61,8 +61,16 @@
     }
   }
   /* 图片 */
-  > img {
+  img {
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
+    position: relative;
+    &.ProseMirror-selectednode {
+      border: dashed 2px saddlebrown;
+    }
+  }
+  hr {
+    border: solid 1px rgba(235, 235, 239, 1);
   }
 }

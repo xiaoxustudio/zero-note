@@ -8,7 +8,7 @@ interface PopoverMenuProps extends Partial<PopoverProps & FlexProps> {
 
 export interface Menus {
   name: string
-  click?: () => void
+  click?: (e?: Record<string, any>) => void
   disabled?: boolean
   children?: Menus[]
 }

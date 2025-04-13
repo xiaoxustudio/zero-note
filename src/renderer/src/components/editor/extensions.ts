@@ -4,7 +4,7 @@ import { Color } from '@tiptap/extension-color'
 import Highlight from '@tiptap/extension-highlight'
 import { all, createLowlight } from 'lowlight'
 import { Markdown } from 'tiptap-markdown'
-import CodeBlock from './extensions/codeblock'
+import CodeBlock from './extensions/code-block'
 import CodeBlockLowlight from './extensions/code-block-lowlight'
 import Image from '@tiptap/extension-image'
 

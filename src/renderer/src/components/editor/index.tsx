@@ -1,4 +1,4 @@
-import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent, posToDOMRect } from '@tiptap/react'
 import { FileConfig } from '@renderer/types'
 import { CSSProperties, useEffect, useState } from 'react'
 import {
@@ -11,6 +11,7 @@ import EventBus from '@renderer/bus'
 import { Fragment } from '@tiptap/pm/model'
 import extensions from './extensions'
 import BubbleMenuContent from './bubble-menu'
+import EditorRightContextMenu from './context-menu'
 import styles from './index.module.less'
 import './index.less'
 
@@ -22,6 +23,7 @@ export interface EditorProps {
 function Editor({ select, style }: EditorProps) {
   const [content, setContent] = useState('')
   const [title, setTitle] = useState(select.title)
+  const [selectionRect, setSelectionRect] = useState<DOMRect>()
   const editor = useEditor(
     {
       injectCSS: true,
@@ -64,17 +66,30 @@ function Editor({ select, style }: EditorProps) {
     },
     [content, select]
   )
+  const [popoverVisible, setPopoverVisible] = useState(false)
+  // 处理右键点击事件
+  const handleContextMenu = (event) => {
+    event.preventDefault()
+    if (editor) {
+      const { state } = editor
+      const { from, to } = state.selection
+      const currentRect = posToDOMRect(editor.view, from, to)
+      setSelectionRect(currentRect)
+    }
+    setPopoverVisible(true)
+  }
 
   useEffect(() => {
     changeDocConfig(select.id, { ...select, title }).then(() => EventBus.emit('updateSider'))
   }, [title]) //eslint-disable-line
 
   useEffect(() => {
-    if (select)
+    if (select) {
       readDocContent(select.id).then(async (data) => {
         setTitle(select.title || '')
         setContent(data || '')
       })
+    }
   }, [select])
 
   if (!editor || !select) return null
@@ -91,9 +106,15 @@ function Editor({ select, style }: EditorProps) {
           }
         }}
       />
-      <EditorContent className={styles.Editor} editor={editor}>
+      <EditorContent onContextMenu={handleContextMenu} className={styles.Editor} editor={editor}>
         <BubbleMenuContent className={styles.BubbleMenu} editor={editor} />
       </EditorContent>
+      <EditorRightContextMenu
+        open={popoverVisible}
+        editor={editor}
+        rect={selectionRect}
+        onClose={() => setPopoverVisible(false)}
+      />
     </div>
   )
 }

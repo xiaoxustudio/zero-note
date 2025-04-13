@@ -35,6 +35,19 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
   const [codePopover, setCodePopover] = useState(false)
   const [codeSearch, setCodeSearch] = useState('')
 
+  const handleshouldShow: BubbleMenuContentProps['shouldShow'] = ({ editor }) => {
+    const { state } = editor
+    const selection = state.selection.content().content
+    const currentNode = selection.content[0]
+    if (!currentNode) return false
+    switch (currentNode.type.name) {
+      case 'image':
+        return false
+      default:
+        return true
+    }
+  }
+
   useEffect(() => {
     const handleSelection = () => {
       const { state } = editor
@@ -64,7 +77,7 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
     }
   }, [editor])
   return (
-    <BubbleMenu {...props} editor={editor}>
+    <BubbleMenu {...props} editor={editor} shouldShow={handleshouldShow}>
       <Bold
         className={editor.isActive('bold') ? 'is-active' : ''}
         onClick={() => editor.chain().focus().toggleBold().run()}

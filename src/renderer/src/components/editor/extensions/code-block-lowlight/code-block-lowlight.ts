@@ -1,4 +1,4 @@
-import CodeBlock, { CodeBlockOptions } from '../codeblock'
+import CodeBlock, { CodeBlockOptions } from '../code-block'
 
 import { LowlightPlugin } from './lowlight-plugin'
 
