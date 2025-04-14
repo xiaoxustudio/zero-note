@@ -28,14 +28,14 @@ interface configSelect {
   codeType: string
 }
 
-function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
+function BubbleMenuContent({ editor, shouldShow, ...props }: BubbleMenuContentProps) {
   const ColorRef = useRef<HTMLInputElement>(null) // 文字颜色
   const BgColorRef = useRef<HTMLInputElement>(null) // 背景颜色
   const configSelect = useRef<configSelect>({ selectRanges: [], codeType: '' })
   const [codePopover, setCodePopover] = useState(false)
   const [codeSearch, setCodeSearch] = useState('')
 
-  const handleshouldShow: BubbleMenuContentProps['shouldShow'] = ({ editor }) => {
+  const handleshouldShow: BubbleMenuContentProps['shouldShow'] = ({ editor, ...reset }) => {
     const { state } = editor
     const selection = state.selection.content().content
     const currentNode = selection.content[0]
@@ -44,7 +44,7 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
       case 'image':
         return false
       default:
-        return true
+        return !!shouldShow?.({ editor, ...reset })
     }
   }
 
@@ -76,6 +76,7 @@ function BubbleMenuContent({ editor, ...props }: BubbleMenuContentProps) {
       editor.off('selectionUpdate', handleSelection)
     }
   }, [editor])
+
   return (
     <BubbleMenu {...props} editor={editor} shouldShow={handleshouldShow}>
       <Bold

@@ -107,7 +107,11 @@ function Editor({ select, style }: EditorProps) {
         }}
       />
       <EditorContent onContextMenu={handleContextMenu} className={styles.Editor} editor={editor}>
-        <BubbleMenuContent className={styles.BubbleMenu} editor={editor} />
+        <BubbleMenuContent
+          className={styles.BubbleMenu}
+          editor={editor}
+          shouldShow={() => !popoverVisible}
+        />
       </EditorContent>
       <EditorRightContextMenu
         open={popoverVisible}

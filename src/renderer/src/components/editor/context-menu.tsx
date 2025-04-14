@@ -73,12 +73,44 @@ function EditorRightContextMenu({
             e.onClose()
           }
         }
+      },
+      {
+        name: '插入',
+        children: [
+          {
+            name: '无序列表',
+            click() {
+              if (editor) {
+                editor.chain().focus().toggleBulletList().run()
+              }
+            }
+          }
+        ]
       }
     ],
     // @ts-ignore
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [editor, editor.state.selection.empty]
   )
+  const rectMemo = useMemo(() => {
+    const length = menus.length
+    const w = length * 96
+    const h = length * 32
+    console.log(h, rect?.top || 0 + h, document.documentElement.offsetHeight)
+    return {
+      top: rect?.top
+        ? rect.top + h > document.documentElement.offsetHeight
+          ? document.documentElement.offsetHeight
+          : rect.top - 20
+        : 0,
+      left: rect?.left
+        ? rect.left + w > document.documentElement.offsetWidth
+          ? document.documentElement.offsetWidth
+          : rect.left - 120
+        : 0
+    }
+    // @ts-ignore eslint-disable-next-line
+  }, [menus.length, rect])
   useEffect(() => {
     const handle = (e) => {
       const dom = e.target as HTMLDivElement
@@ -98,8 +130,8 @@ function EditorRightContextMenu({
           ref={containerRef}
           className={styles.ContextMenu}
           style={{
-            top: rect?.top ? rect.top - 20 : 0,
-            left: rect?.left ? rect.left - 120 : 0
+            top: rectMemo.top,
+            left: rectMemo.left
           }}
           {...props}
         >
