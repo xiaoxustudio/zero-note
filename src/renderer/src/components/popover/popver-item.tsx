@@ -3,6 +3,7 @@ import PopoverMenu, { Menus } from './popover'
 import { Ellipsis } from 'lucide-react'
 import { useState } from 'react'
 import styles from './popover-item.module.less'
+import classNames from 'classnames'
 
 type EventInjectType = {
   [k in keyof WindowEventMap]?: Record<string, any>
@@ -21,7 +22,7 @@ function PopoverItem({ item, eventInject, onOpenChange }: PopoverItemProps) {
     <>
       {!item.children || item.disabled ? (
         <Button
-          className={styles.Btn}
+          className={classNames(styles.Btn, item?.selected && styles.Selected)}
           key={item.name}
           type="text"
           onClick={() => {
@@ -36,7 +37,7 @@ function PopoverItem({ item, eventInject, onOpenChange }: PopoverItemProps) {
       ) : (
         <PopoverMenu open={open} menu={item.children} placement="rightBottom">
           <Button
-            className={styles.Btn}
+            className={classNames(styles.Btn, item?.selected && styles.Selected)}
             key={item.name}
             type="text"
             onClick={() => {

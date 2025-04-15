@@ -11,6 +11,7 @@ export interface Menus {
   click?: (e?: Record<string, any>) => void
   disabled?: boolean
   children?: Menus[]
+  selected?: boolean
 }
 
 function PopoverMenu({ menu, className, children, ...props }: PopoverMenuProps) {

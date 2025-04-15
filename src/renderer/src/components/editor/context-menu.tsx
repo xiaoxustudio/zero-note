@@ -79,9 +79,27 @@ function EditorRightContextMenu({
         children: [
           {
             name: '无序列表',
+            selected: editor?.isActive('bulletList'),
             click() {
               if (editor) {
                 editor.chain().focus().toggleBulletList().run()
+              }
+            }
+          },
+          {
+            name: '有序列表',
+            selected: editor?.isActive('orderedList'),
+            click() {
+              if (editor) {
+                editor.chain().focus().toggleOrderedList().run()
+              }
+            }
+          },
+          {
+            name: '分割线',
+            click() {
+              if (editor) {
+                editor.chain().focus().setHorizontalRule().run()
               }
             }
           }
@@ -90,7 +108,7 @@ function EditorRightContextMenu({
     ],
     // @ts-ignore
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [editor, editor.state.selection.empty]
+    [editor, editor.state, editor.state.selection.empty]
   )
   const rectMemo = useMemo(() => {
     const length = menus.length
