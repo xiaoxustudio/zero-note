@@ -11,6 +11,15 @@
   padding: 0.35em 1.3em;
   box-sizing: border-box;
   position: relative;
+  &::after {
+    content: attr(data-create-time);
+    position: absolute;
+    top: 0.35em;
+    right: 2em;
+    z-index: 1;
+    font-size: 0.65em;
+    color: gray;
+  }
 }
 
 .BubbleMenu {

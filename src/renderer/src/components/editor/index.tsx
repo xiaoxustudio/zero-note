@@ -14,6 +14,7 @@ import BubbleMenuContent from './bubble-menu'
 import EditorRightContextMenu from './context-menu'
 import styles from './index.module.less'
 import './index.less'
+import dayjs from 'dayjs'
 
 export interface EditorProps {
   select: FileConfig
@@ -106,7 +107,14 @@ function Editor({ select, style }: EditorProps) {
           }
         }}
       />
-      <EditorContent onContextMenu={handleContextMenu} className={styles.Editor} editor={editor}>
+      <EditorContent
+        onContextMenu={handleContextMenu}
+        className={styles.Editor}
+        editor={editor}
+        data-create-time={
+          '创建时间：' + dayjs(select.createdTime).format().replace('T', ' ').replace('+', ' ')
+        }
+      >
         <BubbleMenuContent
           className={styles.BubbleMenu}
           editor={editor}
