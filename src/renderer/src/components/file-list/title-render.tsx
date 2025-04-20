@@ -21,6 +21,7 @@ function TitleRender({
   modal,
   onSelect
 }: TitleRenderProps & { node: { config?: SelectConfig; id?: string } }) {
+  const [open, setOpen] = useState(false)
   const [rename, setRename] = useState(false)
   const [title, setTitle] = useState(node.title as string)
   const onBulr = () => {
@@ -58,10 +59,11 @@ function TitleRender({
   }
   return (
     <RightContextMenu
+      open={open}
+      onOpenChange={(n) => setOpen(n)}
       item={node.config as SelectConfig}
       arrow={false}
       placement="rightBottom"
-      trigger="contextMenu"
       onClick={onSelect}
       onRename={() => setRename(true)}
     >

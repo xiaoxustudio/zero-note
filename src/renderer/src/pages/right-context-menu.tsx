@@ -14,7 +14,6 @@ import {
   toHtmlStr
 } from '@renderer/utils'
 import { FlexProps, PopoverProps } from 'antd'
-import { useState } from 'react'
 import PopoverMenu from '@renderer/components/popover/popover'
 import jsPDF from 'jspdf'
 import { domToCanvas } from 'modern-screenshot'
@@ -31,7 +30,6 @@ function RightContextMenu({
   onRename,
   ...props
 }: RightContextMenuProps) {
-  const [open, setOpen] = useState(false)
   if (!item) return children
   const basePath = item.realFilePath
   const isFile = item.type === 'file'
@@ -77,6 +75,7 @@ function RightContextMenu({
     },
     {
       name: '导出为',
+      persist: true,
       disabled: !document.querySelector('#editor-instance') || !isFile,
       children: [
         {
@@ -112,6 +111,7 @@ function RightContextMenu({
             const link = document.createElement('a')
             link.download = `${item.title}.${suffix}`
             link.href = dataUrl
+            link.title = '测试'
             link.click()
           }
         },
@@ -193,14 +193,9 @@ function RightContextMenu({
       }
     }
   ]
+
   return (
-    <PopoverMenu
-      open={open}
-      menu={menus}
-      className={className}
-      onOpenChange={(n) => setOpen(n)}
-      {...props}
-    >
+    <PopoverMenu menu={menus} className={className} {...props} trigger={'contextMenu'}>
       {children}
     </PopoverMenu>
   )
