@@ -67,8 +67,15 @@ function TitleRender({
       onClick={onSelect}
       onRename={() => setRename(true)}
     >
-      <div className={classNames(styles.TitleRender, select?.id == node.id && 'is-selected')}>
-        {!rename && <div className={styles.TitleRenderTitle}>{node.title as ReactNode}</div>}
+      <div className={classNames(styles.TitleRender)}>
+        {!rename && (
+          <div
+            className={styles.TitleRenderTitle}
+            style={{ fontWeight: select?.id == node.id ? 'bold' : '' }}
+          >
+            {node.title as ReactNode}
+          </div>
+        )}
         {rename && (
           <input
             className={styles.TitleRenderTitle}
