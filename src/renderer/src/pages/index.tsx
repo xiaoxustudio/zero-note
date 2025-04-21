@@ -11,7 +11,7 @@ import {
   writeSoftWareConfig
 } from '@renderer/utils'
 import { FileConfig, SettingMenu } from '@renderer/types'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import EventBus from '@renderer/bus'
 import { Settings } from 'lucide-react'
 import Setting from '../components/setting'
@@ -26,7 +26,8 @@ function AppContent() {
   const [height, setHeight] = useState(0)
   const [select, setSelect] = useState<FileConfig>()
   const [fileList, setFileList] = useState<FileConfig[]>([])
-  const handleUpdateSider = () => {
+
+  const handleUpdateSider = useCallback(() => {
     readSoftWareConfig().then((content) => {
       let config: SettingMenu[]
       if (!content) {
@@ -39,10 +40,17 @@ function AppContent() {
       }
       EditorCodeBlockConfigToString(config[0].content)
       setGlobalConfig(config).then(() => {
-        if (DocDir) readDocDir().then((data) => setFileList(data))
+        if (DocDir)
+          readDocDir().then((data) => {
+            setFileList(data)
+            // 判断 当前打开的 是否还存在，不存在关闭编辑器
+            if (select && !data.some((v) => v.id == select.id)) {
+              setSelect(undefined)
+            }
+          })
       })
     })
-  }
+  }, [select])
 
   const handleResize = () => {
     setHeight(0) // 重置高度
@@ -60,14 +68,19 @@ function AppContent() {
   }
 
   useEffect(() => {
-    handleUpdateSider()
     EventBus.on('updateSider', handleUpdateSider)
-    handleResize()
     window.addEventListener('resize', handleResize)
     return () => {
       window.removeEventListener('resize', handleResize)
+      EventBus.off('updateSider', handleUpdateSider)
     }
-  }, [])
+  }, [handleUpdateSider])
+
+  useEffect(() => {
+    handleUpdateSider()
+    handleResize()
+  }, []) //eslint-disable-line
+
   return (
     <div className={styles.container}>
       <Head />

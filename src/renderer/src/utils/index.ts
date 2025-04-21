@@ -265,7 +265,7 @@ export async function renameFileOrDirectory(id: string, newName: string) {
   }
 }
 
-export function readDocDir(basePath = DocDir) {
+export function readDocDir(basePath = DocDir): Promise<FileConfig[]> {
   return window.api.readDir(basePath).then(({ success, files, directories }) => {
     if (success) {
       const data = files

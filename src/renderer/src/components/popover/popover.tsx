@@ -1,9 +1,9 @@
 import { Flex, FlexProps, Popover, PopoverProps } from 'antd'
 import { useEffect, useState } from 'react'
+import usePopItemController from '@renderer/hooks/usePopItemController'
 import PopoverItem from './popver-item'
 import PopoverContext from './context'
 import { Menus } from './types'
-import usePopItemController from '@renderer/hooks/usePopItemController'
 
 interface PopoverMenuProps extends Partial<PopoverProps & FlexProps> {
   menu: Menus[]
