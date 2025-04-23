@@ -7,6 +7,10 @@ import { Markdown } from 'tiptap-markdown'
 import CodeBlock from './extensions/code-block'
 import CodeBlockLowlight from './extensions/code-block-lowlight'
 import Image from '@tiptap/extension-image'
+import Table from '@tiptap/extension-table'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import TableRow from '@tiptap/extension-table-row'
 
 const lowlight = createLowlight(all)
 
@@ -27,6 +31,10 @@ const extensions = [
     lowlight
   }),
   CodeBlock,
-  Markdown
+  Markdown,
+  Table,
+  TableRow,
+  TableHeader,
+  TableCell
 ].filter((v) => !(['codeBlock'].includes(v.name) && !v.parent))
 export default extensions

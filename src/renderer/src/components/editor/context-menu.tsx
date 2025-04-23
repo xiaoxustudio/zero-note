@@ -121,7 +121,22 @@ function EditorRightContextMenu({
                             styles.TableCell,
                             tableData[ind][index] === 1 && styles.TableCellSelected
                           )}
-                          onMouseEnter={() => setTableData(calcTableRect(ind, index))}
+                          onMouseEnter={() => {
+                            setTableData(calcTableRect(ind, index))
+                          }}
+                          onClick={() => {
+                            if (editor) {
+                              editor
+                                .chain()
+                                .focus()
+                                .insertTable({
+                                  rows: ind + 1,
+                                  cols: index + 1,
+                                  withHeaderRow: true
+                                })
+                                .run()
+                            }
+                          }}
                         />
                       ))
                     )}
@@ -141,7 +156,6 @@ function EditorRightContextMenu({
     const length = menus.length
     const w = length * 96
     const h = length * 32
-    // console.log(h, rect?.top || 0 + h, document.documentElement.offsetHeight)
     return {
       top: rect?.top
         ? rect.top + h > document.documentElement.offsetHeight
