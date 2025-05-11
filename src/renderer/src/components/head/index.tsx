@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 import { createDocFile } from '@renderer/utils'
 import styles from './index.module.less'
 import EventBus from '@renderer/bus'
+import TooltipWrap from '../tooltip'
 
 function Head() {
   const [isMaximized, setMaximized] = useState(window.api.isMaximized())
@@ -34,12 +35,14 @@ function Head() {
   return (
     <div className={styles.Head}>
       <div className={styles.Left}>
-        <File
-          onClick={() => {
-            createDocFile('无标题', '')
-            EventBus.emit('updateSider')
-          }}
-        />
+        <TooltipWrap title="新建文件" align={{ offset: [30, -10] }}>
+          <File
+            onClick={() => {
+              createDocFile('无标题', '')
+              EventBus.emit('updateSider')
+            }}
+          />
+        </TooltipWrap>
       </div>
       <div
         className={styles.Midden}
@@ -54,23 +57,31 @@ function Head() {
         {window.api.getTitle()}
       </div>
       <div className={styles.Right}>
-        <Minus
-          onClick={(e) => {
-            e.stopPropagation()
-            window.api.minimize()
-          }}
-        />
+        <TooltipWrap title="最小化">
+          <Minus
+            onClick={(e) => {
+              e.stopPropagation()
+              window.api.minimize()
+            }}
+          />
+        </TooltipWrap>
         {isMaximized ? (
-          <Copy onClick={handleWindowState} style={{ transform: 'rotate(90deg)' }} />
+          <TooltipWrap title="缩小">
+            <Copy onClick={handleWindowState} style={{ transform: 'rotate(90deg)' }} />
+          </TooltipWrap>
         ) : (
-          <Square onClick={handleWindowState} />
+          <TooltipWrap title="放大">
+            <Square onClick={handleWindowState} />
+          </TooltipWrap>
         )}
-        <X
-          onClick={(e) => {
-            e.stopPropagation()
-            window.api.close()
-          }}
-        />
+        <TooltipWrap title="关闭">
+          <X
+            onClick={(e) => {
+              e.stopPropagation()
+              window.api.close()
+            }}
+          />
+        </TooltipWrap>
       </div>
     </div>
   )

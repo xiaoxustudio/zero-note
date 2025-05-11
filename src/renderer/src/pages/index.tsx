@@ -19,6 +19,7 @@ import classMenus from '../components/setting/setting-config'
 import FileList from '../components/file-list'
 import styles from './index.module.less'
 import './index.less'
+import TooltipWrap from '@renderer/components/tooltip'
 
 function AppContent() {
   const PageRef = useRef<HTMLDivElement>(null)
@@ -88,7 +89,9 @@ function AppContent() {
         <div className={styles.leftLayout}>
           <FileList files={fileList} basePath="/" onSelect={onSelect} select={select} />
           <div className={styles.setting}>
-            <Settings onClick={() => setSetting(true)} />
+            <TooltipWrap title="设置" placement="top">
+              <Settings onClick={() => setSetting(true)} />
+            </TooltipWrap>
           </div>
         </div>
         <div className={styles.rightLayout}>
